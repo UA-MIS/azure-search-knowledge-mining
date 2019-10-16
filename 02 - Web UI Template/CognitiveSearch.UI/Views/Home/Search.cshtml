@@ -71,16 +71,16 @@
 					<button class="col-md-push-6" onclick="annotate()">Annotate</button>
 
 					<div style="text-align:center; ">
-						<button id="btn1" style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv1()"> Text Class </button>
+						<button id="btn1" style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv1()"> Text Classification </button>
 
-						<button id="btn2" style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv2()"> Entity Class</button>
+						<button id="btn2" style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv2()"> Entity Classification</button>
 					</div>
 					@{
 						var entityClassificationList = ViewBag.entityClassList;
 
-						<div hidden id="item1"style="text-align: center; display:none">
+						<div hidden id="item2"style="text-align: center; display:none">
 							<select name="dropDowns" id="entityType" style="width: 455px">
-								<option value=null selected="selected">Entity Type</option>
+								<option value=null selected="selected">Entity Classification</option>
 								@{
 									@foreach (var entityClass in ViewBag.entityClassList)
 									{
@@ -93,9 +93,9 @@
 
 						var textClassificationList = ViewBag.textClassList;
 
-						<div hidden id="item2" style="text-align: center; display:none">
+						<div hidden id="item1" style="text-align: center; display:none">
 							<select name="dropDowns" id="textType" style="width: 455px">
-								<option value=null selected="selected">Text Type</option>
+								<option value=null selected="selected">Text classification</option>
 								@{
 									@foreach (var textClass in ViewBag.textClassList)
 									{
