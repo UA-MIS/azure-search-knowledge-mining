@@ -64,9 +64,7 @@ namespace CognitiveSearch.UI.Controllers
             TempData["query"] = q;
             TempData["applicationInstrumentationKey"] = _configuration.GetSection("InstrumentationKey")?.Value;
 
-            async void CreateClassificationDropdownsAsync()
-            {
-                // connect to storage account
+             // connect to storage account
                 CloudStorageAccount storageAccount = new CloudStorageAccount(
                 new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
                 "saramisstorage", "yErhAqOlVgL8VDhkAhsrQdzRnCHjQDx5FacWnPG2KhCEx/d3H/mo503Vbt1SJUCinYSWlXnoKIpXhTUsDusrng=="), true);
@@ -103,7 +101,7 @@ namespace CognitiveSearch.UI.Controllers
                 CreateEntityClassificationTableAsync();
 
                 //creating document classification list for dropdown list
-                List<string> docClassificationList = new List<string>();
+                List<DocClassification> docClassificationList = new List<DocClassification>();
                 TableContinuationToken token = null;
                 do
                 {
@@ -111,19 +109,17 @@ namespace CognitiveSearch.UI.Controllers
                     var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x, token)).GetAwaiter().GetResult();
                     foreach (var item in queryResult.Results)
                     {
-                        docClassificationList.Add(item.Classification);
+                        docClassificationList.Add(item);
                     }
                     token = queryResult.ContinuationToken;
                 } while (token != null);
 
                 ViewBag.docClassList = docClassificationList;
-            }
-            CreateClassificationDropdownsAsync();
 
             return View();
         }
 
-        public IActionResult CreateTable(string sText, string id, string commentText)
+        public IActionResult CreateTable(string sText, string id, string commentText, string docClassID)
         {
             //get highlighted text from user
             string highlightedText = sText;
@@ -133,6 +129,9 @@ namespace CognitiveSearch.UI.Controllers
 
             //get comment
             string comment = commentText;
+
+            //get doc classification
+            string docClassification = docClassID;
 
             //used for annotation partition key, row key, and ID
             int annotationCounter = 1;
@@ -259,6 +258,21 @@ namespace CognitiveSearch.UI.Controllers
                     }
                     AddCommentEntities();
                 }
+
+                TableOperation retrieveOperation3 = TableOperation.Retrieve<Document>(docID, docID + "_Doc");
+                TableResult query3 = await Documents.ExecuteAsync(retrieveOperation3);
+
+                // Update the document entity in the table.
+                Document document = query3.Result as Document;
+                document.DocClassID = docClassification;
+
+                TableOperation insertOperation3 = TableOperation.Replace(document);
+
+                async void UpdateDocumentEntities()
+                {
+                    await Documents.ExecuteAsync(insertOperation3);
+                }
+                UpdateDocumentEntities();
             }
             createEntity();
 

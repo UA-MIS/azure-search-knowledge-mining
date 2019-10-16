@@ -55,11 +55,11 @@
 
                 <div style="text-align: center;">
                                         <select id="docType" style="width: 455px">
-                                            <option value="1" selected="selected">Doc Type</option>
+                                            <option value=null selected="selected">Document Classification</option>
                                             @{
                                                 @foreach (var docClass in ViewBag.docClassList)
                                                 {
-                                                    <option value="2">@docClass</option>
+                                                    <option value=@docClass.DocClassID>@docClass.Classification</option>
                                                 }
                                             }
                                         </select>
@@ -67,7 +67,7 @@
 
                     <br />
                     <form class="col-md-pull-6" id="annotateForm" name="annotateForm">
-                        <textarea id="selectedtext" name="saveInfo" rows="1" cols="36"></textarea>
+                        <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize: none"></textarea>
                     </form>
                     <button class="col-md-push-6" onclick="annotate()">Annotate</button>
                     <br />
@@ -96,7 +96,7 @@
                         </select>
                     </div>
                     <br />
-                        <textarea rows="4" cols="50" name="saveInfo" id=“commentBox”></textarea>
+                        <textarea style="resize: none" rows="4" cols="50" name="saveInfo" id=“commentBox”></textarea>
                         <br />
                         <div class="col-lg-offset-5">
                             <button style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onclick="save()">Save</button>
@@ -198,9 +198,7 @@
 
         var items = document.getElementsByName("saveInfo");
 
-        //var id = document.getElementById('docID').value;
-        //var comment = document.getElementById('commentBox').value;
-        //var annotate = document.getElementById('selectedtext').value;
+        var docClass = document.getElementById('docType').value;
 
         var id = items[0].value;
         var annotate = items[1].value;
@@ -210,7 +208,7 @@
         $.ajax({
             type: "POST",
             url: "/Home/CreateTable",
-            data: { sText: annotate.toString(), id: id.toString(), commentText: comment },
+            data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClass },
             success: function (data) {
                 // Do something interesting here.
             }
