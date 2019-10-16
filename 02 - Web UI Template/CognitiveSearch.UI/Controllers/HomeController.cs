@@ -64,17 +64,75 @@ namespace CognitiveSearch.UI.Controllers
             TempData["query"] = q;
             TempData["applicationInstrumentationKey"] = _configuration.GetSection("InstrumentationKey")?.Value;
 
+            async void CreateClassificationDropdownsAsync()
+            {
+                // connect to storage account
+                CloudStorageAccount storageAccount = new CloudStorageAccount(
+                new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+                "saramisstorage", "yErhAqOlVgL8VDhkAhsrQdzRnCHjQDx5FacWnPG2KhCEx/d3H/mo503Vbt1SJUCinYSWlXnoKIpXhTUsDusrng=="), true);
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
+                CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
+                CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
+
+                ViewBag.DocClassificationTable = DocClassifications.Name;
+                ViewBag.TextClassificationTable = TextClassifications.Name;
+                ViewBag.EntityClassificationTable = EntityClassifications.Name;
+
+                async void CreateDocClassificationTableAsync()
+                {
+                    // Create the CloudTable if it does not exist
+                    await DocClassifications.CreateIfNotExistsAsync();
+                }
+                CreateDocClassificationTableAsync();
+
+                async void CreateTextClassificationTableAsync()
+                {
+                    // Create the CloudTable if it does not exist
+                    await TextClassifications.CreateIfNotExistsAsync();
+                }
+                CreateTextClassificationTableAsync();
+
+                async void CreateEntityClassificationTableAsync()
+                {
+                    // Create the CloudTable if it does not exist
+                    await EntityClassifications.CreateIfNotExistsAsync();
+                }
+                CreateEntityClassificationTableAsync();
+
+                //creating document classification list for dropdown list
+                List<string> docClassificationList = new List<string>();
+                TableContinuationToken token = null;
+                do
+                {
+                    var x = new TableQuery<DocClassification>();
+                    var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x, token)).GetAwaiter().GetResult();
+                    foreach (var item in queryResult.Results)
+                    {
+                        docClassificationList.Add(item.Classification);
+                    }
+                    token = queryResult.ContinuationToken;
+                } while (token != null);
+
+                ViewBag.docClassList = docClassificationList;
+            }
+            CreateClassificationDropdownsAsync();
 
             return View();
         }
 
-        public IActionResult CreateTable(string sText, string id)
+        public IActionResult CreateTable(string sText, string id, string commentText)
         {
             //get highlighted text from user
             string highlightedText = sText;
 
             //get document ID
             string docID = id;
+
+            //get comment
+            string comment = commentText;
 
             //used for annotation partition key, row key, and ID
             int annotationCounter = 1;
@@ -92,18 +150,12 @@ namespace CognitiveSearch.UI.Controllers
             CloudTable Documents = tableClient.GetTableReference("Documents");
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
             CloudTable Comments = tableClient.GetTableReference("Comments");
-            CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
-            CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
-            CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
             CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
             CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
 
             ViewBag.DocumentTable = Documents.Name;
             ViewBag.AnnotationTable = Annotations.Name;
             ViewBag.CommentTable = Comments.Name;
-            ViewBag.TextClassificationTable = TextClassifications.Name;
-            ViewBag.EntityClassificationTable = EntityClassifications.Name;
-            ViewBag.DocClassificationTable = DocClassifications.Name;
             ViewBag.DeletedAnnotationTable = DeletedAnnotations.Name;
             ViewBag.DeletedCommentTable = DeletedAnnotations.Name;
 
@@ -128,27 +180,6 @@ namespace CognitiveSearch.UI.Controllers
             }
             CreateCommentTableAsync();
 
-            async void CreateTextClassificationTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await TextClassifications.CreateIfNotExistsAsync();
-            }
-            CreateTextClassificationTableAsync();
-
-            async void CreateEntityClassificationTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await EntityClassifications.CreateIfNotExistsAsync();
-            }
-            CreateEntityClassificationTableAsync();
-
-            async void CreateDocClassificationTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await DocClassifications.CreateIfNotExistsAsync();
-            }
-            CreateDocClassificationTableAsync();
-
             async void CreateDeletedAnnotationTableAsync()
             {
                 // Create the CloudTable if it does not exist
@@ -162,22 +193,6 @@ namespace CognitiveSearch.UI.Controllers
                 await DeletedComments.CreateIfNotExistsAsync();
             }
             CreateDeletedCommentTableAsync();
-
-            //creating document classification list for dropdown list
-            List<string> docClassificationList = new List<string>();
-            TableContinuationToken token = null;
-            do
-            {
-                var q = new TableQuery<DocClassification>();
-                var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(q, token)).GetAwaiter().GetResult();
-                foreach (var item in queryResult.Results)
-                {
-                    docClassificationList.Add(item.Classification);
-                }
-                token = queryResult.ContinuationToken;
-            } while (token != null);
-
-            ViewBag.docClassList = docClassificationList;
 
             //add entity to existing annotation table
             async void createEntity()
@@ -214,35 +229,36 @@ namespace CognitiveSearch.UI.Controllers
                 }
                 AddAnnotationEntities();
 
-                //the below comment logic will only be executed if there is actually a comment
-
-                //retrieves comment entity where partitionKey = counter in table
-                TableOperation retrieveOperation2 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
-                TableResult query2 = await Annotations.ExecuteAsync(retrieveOperation2);
-
-                //if comment entity exists add to counter
-                while (query2.Result != null)
+                if (comment != null)
                 {
-                    commentCounter++;
-                    retrieveOperation2 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
+                    //retrieves comment entity where partitionKey = counter in table
+                    TableOperation retrieveOperation2 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
+                    TableResult query2 = await Comments.ExecuteAsync(retrieveOperation2);
 
-                    query2 = await Annotations.ExecuteAsync(retrieveOperation2);
+                    //if comment entity exists add to counter
+                    while (query2.Result != null)
+                    {
+                        commentCounter++;
+                        retrieveOperation2 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
+
+                        query2 = await Comments.ExecuteAsync(retrieveOperation2);
+                    }
+
+                    // Create a comment entity and add it to the table.
+                    Comment Comment = new Comment(commentCounter.ToString(), commentCounter.ToString());
+                    Comment.CommentID = "C" + commentCounter.ToString();
+                    Comment.CommentText = comment; //get from text box in view
+                    Comment.Date = DateTime.Now;
+                    Comment.AnnotationID = Annotation.AnnotationID;
+
+                    TableOperation insertOperation2 = TableOperation.Insert(Comment);
+
+                    async void AddCommentEntities()
+                    {
+                        await Comments.ExecuteAsync(insertOperation2);
+                    }
+                    AddCommentEntities();
                 }
-
-                // Create a comment entity and add it to the table.
-                Comment Comment = new Comment(commentCounter.ToString(), commentCounter.ToString());
-                Comment.CommentID = "C" + commentCounter.ToString();
-                Comment.CommentText = "This is a comment"; //get from text box in view
-                Comment.Date = DateTime.Now;
-                Comment.AnnotationID = Annotation.AnnotationID;
-
-                TableOperation insertOperation2 = TableOperation.Insert(Comment);
-
-                async void AddCommentEntities()
-                {
-                    await Annotations.ExecuteAsync(insertOperation);
-                }
-                AddCommentEntities();
             }
             createEntity();
 
