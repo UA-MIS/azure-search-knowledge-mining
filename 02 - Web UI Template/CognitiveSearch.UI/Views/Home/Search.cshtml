@@ -96,7 +96,7 @@
                         </select>
                     </div>
 
-                    @{
+                    @{     
                     var entityClassificationList = ViewBag.entityClassList;
 
                     <div style="text-align: center;">
@@ -112,7 +112,6 @@
 
                     </div>
 
-
                     var textClassificationList = ViewBag.textClassList;
 
                     <div style="text-align: center;">
@@ -126,10 +125,10 @@
                             }
                         </select>
                     </div>}
-
                     <br />
                     <textarea rows="4" cols="50" name="saveInfo" id=“commentBox”></textarea>
                     <br />
+
                     <div class="col-lg-offset-5">
                         <button style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onclick="save()">Save</button>
                     </div>
