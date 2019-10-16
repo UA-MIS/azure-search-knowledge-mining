@@ -79,7 +79,7 @@
                     var entityClassificationList = ViewBag.entityClassList;
 
                     <div style="text-align: center;">
-                        <select name="dropDowns" id="entityType" style="width: 455px">
+                        <select id="entityType" style="width: 455px">
                             <option value=null selected="selected">Entity Type</option>
                             @{
                                 @foreach (var entityClass in ViewBag.entityClassList)
@@ -94,7 +94,7 @@
                     var textClassificationList = ViewBag.textClassList;
 
                     <div style="text-align: center;">
-                        <select name="dropDowns" id="textType" style="width: 455px">
+                        <select id="textType" style="width: 455px">
                             <option value=null selected="selected">Text Type</option>
                             @{
                                 @foreach (var textClass in ViewBag.textClassList)
@@ -197,7 +197,7 @@
             selectedText =
                 document.selection.createRange().text;
         }
-        // To write the selected text into the text area
+        // To write the selected text into the textarea
         document.annotateForm.selectedtext.value = selectedText;
     }
 </script>
@@ -219,7 +219,7 @@
         $.ajax({
             type: "POST",
             url: "/Home/CreateTable",
-            data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID, entityClassID, textClassID},
+            data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID },
             success: function (data) {
                 // Do something interesting here.
             }
