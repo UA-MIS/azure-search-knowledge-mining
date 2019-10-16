@@ -242,7 +242,6 @@ namespace CognitiveSearch.UI.Controllers
                 // Create an annotation entity and add it to the table.
                 Annotation Annotation = new Annotation(annotationCounter.ToString(), annotationCounter.ToString());
                 Annotation.AnnotationID = "A" + annotationCounter.ToString();
-                Annotation.ClassificationID = "T1"; //get this value from dropdown list
                 Annotation.DocumentID = docID;
                 Annotation.StartCharLocation = "253"; 
                 Annotation.EndCharLocation = "300";
@@ -251,6 +250,21 @@ namespace CognitiveSearch.UI.Controllers
                 Annotation.HighlightedText = highlightedText;
 
                 TableOperation insertOperation = TableOperation.Insert(Annotation);
+
+                //saves whatever user selected to table
+                if (entityClassID != null)
+                {
+                    Annotation.ClassificationID = entityClassID;
+                } else if (textClassID != null)
+                {
+                    Annotation.ClassificationID = textClassID;
+                }
+                else
+                {
+                    Annotation.ClassificationID = null;
+                }
+
+                
 
                 async void AddAnnotationEntities()
                 {
