@@ -117,22 +117,22 @@ namespace CognitiveSearch.UI.Controllers
                 ViewBag.docClassList = docClassificationList;
 
             //creating TEXT classification list for dropdown list
-            List<string> textClassificationList = new List<string>();
+            List<TextClassification> textClassificationList = new List<TextClassification>();
             TableContinuationToken token1 = null;
             do
             {
-                var qT = new TableQuery<DocClassification>();
+                var qT = new TableQuery<TextClassification>();
                 var queryResult1 = Task.Run(() => TextClassifications.ExecuteQuerySegmentedAsync(qT, token1)).GetAwaiter().GetResult();
                 foreach (var item in queryResult1.Results)
                 {
-                    textClassificationList.Add(item.Classification);
+                    textClassificationList.Add(item);
                 }
                 token1 = queryResult1.ContinuationToken;
             } while (token1 != null);
             ViewBag.textClassList = textClassificationList;
 
             //creating ENTITY classification list for dropdown list
-            List<string> entityClassificationList = new List<string>();
+            List<EntityClassification> entityClassificationList = new List<EntityClassification>();
             TableContinuationToken token2 = null;
             do
             {
@@ -140,7 +140,7 @@ namespace CognitiveSearch.UI.Controllers
                 var queryResult2 = Task.Run(() => EntityClassifications.ExecuteQuerySegmentedAsync(qE, token2)).GetAwaiter().GetResult();
                 foreach (var item in queryResult2.Results)
                 {
-                    entityClassificationList.Add(item.Classification);
+                    entityClassificationList.Add(item);
                 }
                 token2 = queryResult2.ContinuationToken;
             } while (token2 != null);
