@@ -149,7 +149,7 @@ namespace CognitiveSearch.UI.Controllers
             return View();
         }
 
-        public IActionResult CreateTable(string sText, string id, string commentText, string docClassID)
+        public IActionResult CreateTable(string sText, string id, string commentText, string docClassID, string entityClassID, string textClassID)
         {
             //get highlighted text from user
             string highlightedText = sText;
