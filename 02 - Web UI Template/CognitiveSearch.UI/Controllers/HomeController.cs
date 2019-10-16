@@ -64,9 +64,7 @@ namespace CognitiveSearch.UI.Controllers
             TempData["query"] = q;
             TempData["applicationInstrumentationKey"] = _configuration.GetSection("InstrumentationKey")?.Value;
 
-            async void CreateClassificationDropdownsAsync()
-            {
-                // connect to storage account
+             // connect to storage account
                 CloudStorageAccount storageAccount = new CloudStorageAccount(
                 new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
                 "saramisstorage", "yErhAqOlVgL8VDhkAhsrQdzRnCHjQDx5FacWnPG2KhCEx/d3H/mo503Vbt1SJUCinYSWlXnoKIpXhTUsDusrng=="), true);
@@ -103,7 +101,7 @@ namespace CognitiveSearch.UI.Controllers
                 CreateEntityClassificationTableAsync();
 
                 //creating document classification list for dropdown list
-                List<string> docClassificationList = new List<string>();
+                List<DocClassification> docClassificationList = new List<DocClassification>();
                 TableContinuationToken token = null;
                 do
                 {
@@ -111,49 +109,47 @@ namespace CognitiveSearch.UI.Controllers
                     var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x, token)).GetAwaiter().GetResult();
                     foreach (var item in queryResult.Results)
                     {
-                        docClassificationList.Add(item.Classification);
+                        docClassificationList.Add(item);
                     }
                     token = queryResult.ContinuationToken;
                 } while (token != null);
 
                 ViewBag.docClassList = docClassificationList;
 
-                //creating TEXT classification list for dropdown list
-                List<string> textClassificationList = new List<string>();
-                TableContinuationToken token1 = null;
-                do
+            //creating TEXT classification list for dropdown list
+            List<TextClassification> textClassificationList = new List<TextClassification>();
+            TableContinuationToken token1 = null;
+            do
+            {
+                var qT = new TableQuery<TextClassification>();
+                var queryResult1 = Task.Run(() => TextClassifications.ExecuteQuerySegmentedAsync(qT, token1)).GetAwaiter().GetResult();
+                foreach (var item in queryResult1.Results)
                 {
-                    var qT = new TableQuery<DocClassification>();
-                    var queryResult1 = Task.Run(() => TextClassifications.ExecuteQuerySegmentedAsync(qT, token1)).GetAwaiter().GetResult();
-                    foreach (var item in queryResult1.Results)
-                    {
-                        textClassificationList.Add(item.Classification);
-                    }
-                    token1 = queryResult1.ContinuationToken;
-                } while (token1 != null);
-                ViewBag.textClassList = textClassificationList;
+                    textClassificationList.Add(item);
+                }
+                token1 = queryResult1.ContinuationToken;
+            } while (token1 != null);
+            ViewBag.textClassList = textClassificationList;
 
-                //creating ENTITY classification list for dropdown list
-                List<string> entityClassificationList = new List<string>();
-                TableContinuationToken token2 = null;
-                do
+            //creating ENTITY classification list for dropdown list
+            List<EntityClassification> entityClassificationList = new List<EntityClassification>();
+            TableContinuationToken token2 = null;
+            do
+            {
+                var qE = new TableQuery<EntityClassification>();
+                var queryResult2 = Task.Run(() => EntityClassifications.ExecuteQuerySegmentedAsync(qE, token2)).GetAwaiter().GetResult();
+                foreach (var item in queryResult2.Results)
                 {
-                    var qE = new TableQuery<EntityClassification>();
-                    var queryResult2 = Task.Run(() => EntityClassifications.ExecuteQuerySegmentedAsync(qE, token2)).GetAwaiter().GetResult();
-                    foreach (var item in queryResult2.Results)
-                    {
-                        entityClassificationList.Add(item.Classification);
-                    }
-                    token2 = queryResult2.ContinuationToken;
-                } while (token2 != null);
-                ViewBag.entityClassList = entityClassificationList;
-            }
-            CreateClassificationDropdownsAsync();
+                    entityClassificationList.Add(item);
+                }
+                token2 = queryResult2.ContinuationToken;
+            } while (token2 != null);
+            ViewBag.entityClassList = entityClassificationList;
 
             return View();
         }
 
-        public IActionResult CreateTable(string sText, string id, string commentText)
+        public IActionResult CreateTable(string sText, string id, string commentText, string docClassID)
         {
             //get highlighted text from user
             string highlightedText = sText;
@@ -163,6 +159,9 @@ namespace CognitiveSearch.UI.Controllers
 
             //get comment
             string comment = commentText;
+
+            //get doc classification
+            string docClassification = docClassID;
 
             //used for annotation partition key, row key, and ID
             int annotationCounter = 1;
@@ -289,6 +288,21 @@ namespace CognitiveSearch.UI.Controllers
                     }
                     AddCommentEntities();
                 }
+
+                TableOperation retrieveOperation3 = TableOperation.Retrieve<Document>(docID, docID + "_Doc");
+                TableResult query3 = await Documents.ExecuteAsync(retrieveOperation3);
+
+                // Update the document entity in the table.
+                Document document = query3.Result as Document;
+                document.DocClassID = docClassification;
+
+                TableOperation insertOperation3 = TableOperation.Replace(document);
+
+                async void UpdateDocumentEntities()
+                {
+                    await Documents.ExecuteAsync(insertOperation3);
+                }
+                UpdateDocumentEntities();
             }
             createEntity();
 

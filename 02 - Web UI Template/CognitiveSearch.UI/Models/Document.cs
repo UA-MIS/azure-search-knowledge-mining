@@ -19,7 +19,9 @@ namespace CognitiveSearch.UI.Models
             public Document() { }
 
             public string DocumentID { get; set; }
-            public string DocTitle { get; set; }
+            public string Name { get; set; }
+            public string Transcript { get; set; }
+            public string generatedId { get; set; }
             public string DocClassID { get; set; }
         }
     }
