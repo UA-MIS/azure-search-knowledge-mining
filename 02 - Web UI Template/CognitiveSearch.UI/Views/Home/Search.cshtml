@@ -50,27 +50,27 @@
 
                     @*UA MIS ADDED HTML*@
 
-                    @{ 
+                    @{
                         var docClassificationList = ViewBag.docClassList;
 
-                <div style="text-align: center;">
-                                        <select id="docType" style="width: 455px">
-                                            <option value=null selected="selected">Document Classification</option>
-                                            @{
-                                                @foreach (var docClass in ViewBag.docClassList)
-                                                {
-                                                    <option value=@docClass.DocClassID>@docClass.Classification</option>
-                                                }
-                                            }
-                                        </select>
-                </div>}
+                        <div style="text-align: center;">
+                            <select id="docType" style="width: 455px">
+                                <option value="1" selected="selected">Doc Type</option>
+                                @{
+                                    @foreach (var docClass in ViewBag.docClassList)
+                                    {
+                                        <option value="2">@docClass</option>
+                                    }
+                                }
+                            </select>
+                        </div>}
 
                     <br />
                     <form class="col-md-pull-6" id="annotateForm" name="annotateForm">
-                        <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize: none"></textarea>
+                        <textarea id="selectedtext" name="saveInfo" rows="1" cols="36"></textarea>
                     </form>
                     <button class="col-md-push-6" onclick="annotate()">Annotate</button>
-                    <br />
+                    
                     <div style="text-align:center; ">
                         <button style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv('item')"> Text Class </button>
 
@@ -81,11 +81,11 @@
 
                             <option value="1" selected="selected">Entity Type</option>
                             <option value="2">Person</option>
-                            <option value="3">Place</option>
-                            <option value="4">Thing</option>
+                            <option value="3">Location</option>
+                            <option value="4">Organization</option>
                         </select>
                     </div>
-                    <br />
+                    
                     <div hidden id="item" style="text-align: center;">
                         <select id="textType" style="width: 455px">
 
@@ -95,12 +95,44 @@
                             <option value="4">Conclusion</option>
                         </select>
                     </div>
+
+                    @{
+                    var entityClassificationList = ViewBag.entityClassList;
+
+                    <div style="text-align: center;">
+                        <select id="entityType" style="width: 455px">
+                            <option value="1" selected="selected">Entity Type</option>
+                            @{
+                                @foreach (var entityClass in ViewBag.entityClassList)
+                                {
+                                    <option value="2">@entityClass</option>
+                                }
+                            }
+                        </select>
+
+                    </div>
+
+
+                    var textClassificationList = ViewBag.textClassList;
+
+                    <div style="text-align: center;">
+                        <select id="textType" style="width: 455px">
+                            <option value="1" selected="selected">Text Type</option>
+                            @{
+                                @foreach (var textClass in ViewBag.textClassList)
+                                {
+                                    <option value="2">@textClass</option>
+                                }
+                            }
+                        </select>
+                    </div>}
+
                     <br />
-                        <textarea style="resize: none" rows="4" cols="50" name="saveInfo" id=“commentBox”></textarea>
-                        <br />
-                        <div class="col-lg-offset-5">
-                            <button style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onclick="save()">Save</button>
-                        </div>
+                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox”></textarea>
+                    <br />
+                    <div class="col-lg-offset-5">
+                        <button style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onclick="save()">Save</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -198,7 +230,9 @@
 
         var items = document.getElementsByName("saveInfo");
 
-        var docClass = document.getElementById('docType').value;
+        //var id = document.getElementById('docID').value;
+        //var comment = document.getElementById('commentBox').value;
+        //var annotate = document.getElementById('selectedtext').value;
 
         var id = items[0].value;
         var annotate = items[1].value;
@@ -208,7 +242,7 @@
         $.ajax({
             type: "POST",
             url: "/Home/CreateTable",
-            data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClass },
+            data: { sText: annotate.toString(), id: id.toString(), commentText: comment },
             success: function (data) {
                 // Do something interesting here.
             }
