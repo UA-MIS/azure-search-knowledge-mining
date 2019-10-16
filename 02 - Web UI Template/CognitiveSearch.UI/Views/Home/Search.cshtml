@@ -54,7 +54,7 @@
                         var docClassificationList = ViewBag.docClassList;
 
                         <div style="text-align: center;">
-                            <select id="docType" style="width: 455px">
+                            <select name="dropDowns" id="docType" style="width: 455px">
                                 <option value=null selected="selected">Document Classification</option>
                                     @{
                                         @foreach (var docClass in ViewBag.docClassList)
@@ -206,20 +206,20 @@
     function save() {
 
         var items = document.getElementsByName("saveInfo");
-
-        //var id = document.getElementById('docID').value;
-        //var comment = document.getElementById('commentBox').value;
-        //var annotate = document.getElementById('selectedtext').value;
-
         var id = items[0].value;
         var annotate = items[1].value;
         var comment = items[2].value;
+
+        var dropDownitems = document.getElementsByName("dropDowns");
+        var docClassID = dropDownitems[0].value;
+        //var entityClassID = dropDownitems[1].value;
+        //var textClassID = dropDownitems[2].value;
 
 
         $.ajax({
             type: "POST",
             url: "/Home/CreateTable",
-            data: { sText: annotate.toString(), id: id.toString(), commentText: comment },
+            data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID },
             success: function (data) {
                 // Do something interesting here.
             }
