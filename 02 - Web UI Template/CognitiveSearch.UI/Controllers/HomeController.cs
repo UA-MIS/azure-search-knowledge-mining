@@ -64,20 +64,24 @@ namespace CognitiveSearch.UI.Controllers
             TempData["query"] = q;
             TempData["applicationInstrumentationKey"] = _configuration.GetSection("InstrumentationKey")?.Value;
 
-             // connect to storage account
+                // connect to storage account
                 CloudStorageAccount storageAccount = new CloudStorageAccount(
                 new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
                 "saramisstorage", "yErhAqOlVgL8VDhkAhsrQdzRnCHjQDx5FacWnPG2KhCEx/d3H/mo503Vbt1SJUCinYSWlXnoKIpXhTUsDusrng=="), true);
 
                 CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
+                CloudTable Documents = tableClient.GetTableReference("Documents");
                 CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
                 CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
                 CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
 
-                ViewBag.DocClassificationTable = DocClassifications.Name;
-                ViewBag.TextClassificationTable = TextClassifications.Name;
-                ViewBag.EntityClassificationTable = EntityClassifications.Name;
+                async void CreateDocumentTableAsync()
+                {
+                    // Create the CloudTable if it does not exist
+                    await Documents.CreateIfNotExistsAsync();
+                }
+                CreateDocumentTableAsync();
 
                 async void CreateDocClassificationTableAsync()
                 {
@@ -100,8 +104,8 @@ namespace CognitiveSearch.UI.Controllers
                 }
                 CreateEntityClassificationTableAsync();
 
-                //creating document classification list for dropdown list
-                List<DocClassification> docClassificationList = new List<DocClassification>();
+            //creating document classification list for dropdown list
+            List<DocClassification> docClassificationList = new List<DocClassification>();
                 TableContinuationToken token = null;
                 do
                 {
@@ -181,19 +185,6 @@ namespace CognitiveSearch.UI.Controllers
             CloudTable Comments = tableClient.GetTableReference("Comments");
             CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
             CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
-
-            ViewBag.DocumentTable = Documents.Name;
-            ViewBag.AnnotationTable = Annotations.Name;
-            ViewBag.CommentTable = Comments.Name;
-            ViewBag.DeletedAnnotationTable = DeletedAnnotations.Name;
-            ViewBag.DeletedCommentTable = DeletedAnnotations.Name;
-
-            async void CreateDocumentTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await Documents.CreateIfNotExistsAsync();
-            }
-            CreateDocumentTableAsync();
 
             async void CreateAnnotationTableAsync()
             {
@@ -313,14 +304,14 @@ namespace CognitiveSearch.UI.Controllers
                 TableOperation insertOperation3 = TableOperation.Replace(document);
 
                 async void UpdateDocumentEntities()
-                {
+                { 
                     await Documents.ExecuteAsync(insertOperation3);
                 }
                 UpdateDocumentEntities();
             }
             createEntity();
 
-            return RedirectToAction("Index", "Home");
+            return Json("Annotation has been saved.");
         }
 
         [HttpPost]
