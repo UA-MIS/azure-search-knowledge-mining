@@ -65,15 +65,16 @@
 							</select>
 						</div>}
 					<br />
-					<form class="col-md-pull-6" id="annotateForm" name="annotateForm">
-						<textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none"></textarea>
-					</form>
-					<button class="col-md-push-6" onclick="annotate()">Annotate</button>
-
+                    <div  style="text-align: center;">
+                        <form class="col-md-pull-6" id="annotateForm" name="annotateForm" style="display:inline;">
+                            <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center;"></textarea>
+                        </form>
+                        <button class="col-md-push-60" style="color: #fff; background-color: #1e6ce4; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
+                    </div>
 					<div style="text-align:center; ">
-						<button id="btn1" style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv1()"> Text Classification </button>
+						<button id="btn1" style="color: #fff; background-color: #1e6ce4; margin: 30px; width: 10%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv1()"> Text Classification </button>
 
-						<button id="btn2" style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onClick="togglediv2()"> Entity Classification</button>
+						<button id="btn2" style="color: #fff; background-color: #1e6ce4; margin: 30px; width: 10%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv2()"> Entity Classification</button>
 					</div>
 					@{
 						var entityClassificationList = ViewBag.entityClassList;
@@ -105,10 +106,12 @@
 							</select>
 						</div>}
 					<br />
-					<textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none"></textarea>
+                    <form style="text-align: center;">
+					<textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none;"></textarea>
+                    </form>
 					<br />
-					<div class="col-lg-offset-5">
-						<button style="color: white; background-color: #1e6ce4; margin: 30px; width: 10%;" onclick="save()">Save</button>
+					<div class="col-lg-offset-5" style="text-align:center;">
+						<button style="color: #fff; background-color: #1e6ce4; margin: 30px; width: 10%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
 					</div>
 				</div>
 			</div>
