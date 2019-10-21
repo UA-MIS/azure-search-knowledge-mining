@@ -64,61 +64,93 @@ namespace CognitiveSearch.UI.Controllers
             TempData["query"] = q;
             TempData["applicationInstrumentationKey"] = _configuration.GetSection("InstrumentationKey")?.Value;
 
-                // connect to storage account
-                CloudStorageAccount storageAccount = new CloudStorageAccount(
-                new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-                "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            // connect to storage account
+            CloudStorageAccount storageAccount = new CloudStorageAccount(
+            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
 
-                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
-                CloudTable Documents = tableClient.GetTableReference("Documents");
-                CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
-                CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
-                CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
+            CloudTable Documents = tableClient.GetTableReference("Documents");
+            CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
+            CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
+            CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
+            CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            CloudTable Comments = tableClient.GetTableReference("Comments");
+            CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
+            CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
 
-                async void CreateDocumentTableAsync()
-                {
-                    // Create the CloudTable if it does not exist
-                    await Documents.CreateIfNotExistsAsync();
-                }
-                CreateDocumentTableAsync();
+            async void CreateDocumentTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await Documents.CreateIfNotExistsAsync();
+            }
+            CreateDocumentTableAsync();
 
-                async void CreateDocClassificationTableAsync()
-                {
-                    // Create the CloudTable if it does not exist
-                    await DocClassifications.CreateIfNotExistsAsync();
-                }
-                CreateDocClassificationTableAsync();
+            async void CreateDocClassificationTableAsync()
+            {
+            // Create the CloudTable if it does not exist
+            await DocClassifications.CreateIfNotExistsAsync();
+            }
+            CreateDocClassificationTableAsync();
 
-                async void CreateTextClassificationTableAsync()
-                {
-                    // Create the CloudTable if it does not exist
-                    await TextClassifications.CreateIfNotExistsAsync();
-                }
-                CreateTextClassificationTableAsync();
+            async void CreateTextClassificationTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await TextClassifications.CreateIfNotExistsAsync();
+            }
+            CreateTextClassificationTableAsync();
 
-                async void CreateEntityClassificationTableAsync()
-                {
-                    // Create the CloudTable if it does not exist
-                    await EntityClassifications.CreateIfNotExistsAsync();
-                }
-                CreateEntityClassificationTableAsync();
+            async void CreateEntityClassificationTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await EntityClassifications.CreateIfNotExistsAsync();
+            }
+            CreateEntityClassificationTableAsync();
+
+            async void CreateAnnotationTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await Annotations.CreateIfNotExistsAsync();
+            }
+            CreateAnnotationTableAsync();
+
+            async void CreateCommentTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await Comments.CreateIfNotExistsAsync();
+            }
+            CreateCommentTableAsync();
+
+            async void CreateDeletedAnnotationTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await DeletedAnnotations.CreateIfNotExistsAsync();
+            }
+            CreateDeletedAnnotationTableAsync();
+
+            async void CreateDeletedCommentTableAsync()
+            {
+                // Create the CloudTable if it does not exist
+                await DeletedComments.CreateIfNotExistsAsync();
+            }
+            CreateDeletedCommentTableAsync();
 
             //creating document classification list for dropdown list
             List<DocClassification> docClassificationList = new List<DocClassification>();
-                TableContinuationToken token = null;
-                do
+            TableContinuationToken token = null;
+            do
+            {
+                var x = new TableQuery<DocClassification>();
+                var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x, token)).GetAwaiter().GetResult();
+                foreach (var item in queryResult.Results)
                 {
-                    var x = new TableQuery<DocClassification>();
-                    var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x, token)).GetAwaiter().GetResult();
-                    foreach (var item in queryResult.Results)
-                    {
-                        docClassificationList.Add(item);
-                    }
-                    token = queryResult.ContinuationToken;
-                } while (token != null);
+                    docClassificationList.Add(item);
+                }
+                token = queryResult.ContinuationToken;
+            } while (token != null);
 
-                ViewBag.docClassList = docClassificationList;
+            ViewBag.docClassList = docClassificationList;
 
             //creating TEXT classification list for dropdown list
             List<TextClassification> textClassificationList = new List<TextClassification>();
@@ -153,7 +185,7 @@ namespace CognitiveSearch.UI.Controllers
             return View();
         }
 
-        public IActionResult CreateTable(string sText, string id, string commentText, string docClassID, string entityClassID, string textClassID)
+        public IActionResult SaveAnnotations(string sText, string id, string commentText, string docClassID, string entityClassID, string textClassID)
         {
             //get highlighted text from user
             string highlightedText = sText;
@@ -185,34 +217,6 @@ namespace CognitiveSearch.UI.Controllers
             CloudTable Comments = tableClient.GetTableReference("Comments");
             CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
             CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
-
-            async void CreateAnnotationTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await Annotations.CreateIfNotExistsAsync();
-            }
-            CreateAnnotationTableAsync();
-
-            async void CreateCommentTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await Comments.CreateIfNotExistsAsync();
-            }
-            CreateCommentTableAsync();
-
-            async void CreateDeletedAnnotationTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await DeletedAnnotations.CreateIfNotExistsAsync();
-            }
-            CreateDeletedAnnotationTableAsync();
-
-            async void CreateDeletedCommentTableAsync()
-            {
-                // Create the CloudTable if it does not exist
-                await DeletedComments.CreateIfNotExistsAsync();
-            }
-            CreateDeletedCommentTableAsync();
 
             //add entity to existing annotation table
             async void createEntity()
@@ -254,8 +258,6 @@ namespace CognitiveSearch.UI.Controllers
                 {
                     Annotation.ClassificationID = "null";
                 }
-
-                
 
                 async void AddAnnotationEntities()
                 {

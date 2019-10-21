@@ -221,7 +221,7 @@
 
 		$.ajax({
 			type: "POST",
-			url: "/Home/CreateTable",
+			url: "/Home/SaveAnnotations",
 			data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID, entityClassID: entityClassID, textClassID: textClassID },
 			success: function () {
                 alert("Annotation has been saved.");
