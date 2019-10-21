@@ -243,16 +243,16 @@ namespace CognitiveSearch.UI.Controllers
                 TableOperation insertOperation = TableOperation.Insert(Annotation);
 
                 //saves whatever user selected to table
-                if (entityClassID != null)
+                if (entityClassID != "null")
                 {
                     Annotation.ClassificationID = entityClassID;
-                } else if (textClassID != null)
+                } else if (textClassID != "null")
                 {
                     Annotation.ClassificationID = textClassID;
                 }
                 else
                 {
-                    Annotation.ClassificationID = null;
+                    Annotation.ClassificationID = "null";
                 }
 
                 
