@@ -69,7 +69,7 @@
                         <form class="col-md-pull-6" id="annotateForm" name="annotateForm" style="display:inline;">
                             <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center;"></textarea>
                         </form>
-                        <button class="col-md-push-6" style="color: #fff; background-color: #1e6ce4; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
+                        <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px; background-color: #1e6ce4; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
                     </div>
                     <br />
                     <div  style="text-align: center;" >
@@ -240,7 +240,9 @@
 </script>
 <script>
 	function togglediv1() {
-		var div = document.getElementById("item1");
+        var div = document.getElementById("item1");
+        var dropDown = document.getElementById("textType");
+        dropDown.selectedIndex = 0;
 		div.style.display = div.style.display == "none" ? "block" : "none";
 
 		if (div.style.display === "block") {
@@ -260,7 +262,9 @@
 	}
 
 	function togglediv2() {
-		var div = document.getElementById("item2");
+        var div = document.getElementById("item2");
+        var dropDown = document.getElementById("entityType");
+        dropDown.selectedIndex = 0;
 		div.style.display = div.style.display == "none" ? "block" : "none";
 
 		if (div.style.display === "block") {
