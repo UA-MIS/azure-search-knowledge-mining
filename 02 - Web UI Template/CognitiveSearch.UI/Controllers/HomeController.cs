@@ -24,6 +24,8 @@ using static CognitiveSearch.UI.Models.Documents;
 using static CognitiveSearch.UI.Models.EntityClassifications;
 using static CognitiveSearch.UI.Models.TextClassifications;
 using Microsoft.AspNetCore.Http;
+using Data = System.Collections.Generic.KeyValuePair<string, string>;
+using System.Text;
 
 namespace CognitiveSearch.UI.Controllers
 {
@@ -135,57 +137,57 @@ namespace CognitiveSearch.UI.Controllers
                 await DeletedComments.CreateIfNotExistsAsync();
             }
             CreateDeletedCommentTableAsync();
-
+            
             //creating document classification list for dropdown list
             List<DocClassification> docClassificationList = new List<DocClassification>();
-            TableContinuationToken token = null;
+            TableContinuationToken token2 = null;
             do
             {
-                var x = new TableQuery<DocClassification>();
-                var queryResult = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x, token)).GetAwaiter().GetResult();
-                foreach (var item in queryResult.Results)
+                var x2 = new TableQuery<DocClassification>();
+                var queryResult2 = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x2, token2)).GetAwaiter().GetResult();
+                foreach (var item in queryResult2.Results)
                 {
                     docClassificationList.Add(item);
                 }
-                token = queryResult.ContinuationToken;
-            } while (token != null);
+                token2 = queryResult2.ContinuationToken;
+            } while (token2 != null);
 
             ViewBag.docClassList = docClassificationList;
 
             //creating TEXT classification list for dropdown list
             List<TextClassification> textClassificationList = new List<TextClassification>();
-            TableContinuationToken token1 = null;
+            TableContinuationToken token3 = null;
             do
             {
-                var qT = new TableQuery<TextClassification>();
-                var queryResult1 = Task.Run(() => TextClassifications.ExecuteQuerySegmentedAsync(qT, token1)).GetAwaiter().GetResult();
-                foreach (var item in queryResult1.Results)
+                var x3 = new TableQuery<TextClassification>();
+                var queryResult3 = Task.Run(() => TextClassifications.ExecuteQuerySegmentedAsync(x3, token3)).GetAwaiter().GetResult();
+                foreach (var item in queryResult3.Results)
                 {
                     textClassificationList.Add(item);
                 }
-                token1 = queryResult1.ContinuationToken;
-            } while (token1 != null);
+                token3 = queryResult3.ContinuationToken;
+            } while (token3 != null);
             ViewBag.textClassList = textClassificationList;
 
             //creating ENTITY classification list for dropdown list
             List<EntityClassification> entityClassificationList = new List<EntityClassification>();
-            TableContinuationToken token2 = null;
+            TableContinuationToken token4 = null;
             do
             {
-                var qE = new TableQuery<EntityClassification>();
-                var queryResult2 = Task.Run(() => EntityClassifications.ExecuteQuerySegmentedAsync(qE, token2)).GetAwaiter().GetResult();
-                foreach (var item in queryResult2.Results)
+                var x4 = new TableQuery<EntityClassification>();
+                var queryResult4 = Task.Run(() => EntityClassifications.ExecuteQuerySegmentedAsync(x4, token4)).GetAwaiter().GetResult();
+                foreach (var item in queryResult4.Results)
                 {
                     entityClassificationList.Add(item);
                 }
-                token2 = queryResult2.ContinuationToken;
-            } while (token2 != null);
+                token4 = queryResult4.ContinuationToken;
+            } while (token4 != null);
             ViewBag.entityClassList = entityClassificationList;
 
             return View();
         }
 
-        public IActionResult SaveAnnotations(string sText, string id, string commentText, string docClassID, string entityClassID, string textClassID)
+        public IActionResult SaveAnnotations(string sText, string id, string commentText, string docClassID, string entityClassID, string textClassID, string start, string end)
         {
             //get highlighted text from user
             string highlightedText = sText;
@@ -198,6 +200,12 @@ namespace CognitiveSearch.UI.Controllers
 
             //get doc classification
             string docClassification = docClassID;
+
+            //get startChar
+            string startChar = start;
+
+            //get endChar
+            string endChar = end;
 
             //used for annotation partition key, row key, and ID
             int annotationCounter = 1;
@@ -233,13 +241,13 @@ namespace CognitiveSearch.UI.Controllers
 
                     query = await Annotations.ExecuteAsync(retrieveOperation);
                 }
-
+                
                 // Create an annotation entity and add it to the table.
                 Annotation Annotation = new Annotation(annotationCounter.ToString(), annotationCounter.ToString());
                 Annotation.AnnotationID = "A" + annotationCounter.ToString();
                 Annotation.DocumentID = docID;
-                Annotation.StartCharLocation = "253"; 
-                Annotation.EndCharLocation = "300";
+                Annotation.StartCharLocation = startChar; 
+                Annotation.EndCharLocation = endChar;
                 Annotation.Accept = 0;
                 Annotation.Deny = 0;
                 Annotation.HighlightedText = highlightedText;
@@ -268,16 +276,16 @@ namespace CognitiveSearch.UI.Controllers
                 if (comment != null)
                 {
                     //retrieves comment entity where partitionKey = counter in table
-                    TableOperation retrieveOperation2 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
-                    TableResult query2 = await Comments.ExecuteAsync(retrieveOperation2);
+                    TableOperation retrieveOperation3 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
+                    TableResult query3 = await Comments.ExecuteAsync(retrieveOperation3);
 
                     //if comment entity exists add to counter
-                    while (query2.Result != null)
+                    while (query3.Result != null)
                     {
                         commentCounter++;
-                        retrieveOperation2 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
+                        retrieveOperation3 = TableOperation.Retrieve<Comment>(commentCounter.ToString(), "C" + commentCounter.ToString());
 
-                        query2 = await Comments.ExecuteAsync(retrieveOperation2);
+                        query3 = await Comments.ExecuteAsync(retrieveOperation3);
                     }
 
                     // Create a comment entity and add it to the table.
@@ -296,14 +304,14 @@ namespace CognitiveSearch.UI.Controllers
                     AddCommentEntities();
                 }
 
-                TableOperation retrieveOperation3 = TableOperation.Retrieve<Document>(docID, docID + "_Doc");
-                TableResult query3 = await Documents.ExecuteAsync(retrieveOperation3);
+                TableOperation retrieveOperation4 = TableOperation.Retrieve<Document>(docID, docID + "_Doc");
+                TableResult query4 = await Documents.ExecuteAsync(retrieveOperation4);
 
                 // Update the document entity in the table.
-                Document document = query3.Result as Document;
-                document.DocClassID = docClassification;
+                Document document2 = query4.Result as Document;
+                document2.DocClassID = docClassification;
 
-                TableOperation insertOperation3 = TableOperation.Replace(document);
+                TableOperation insertOperation3 = TableOperation.Replace(document2);
 
                 async void UpdateDocumentEntities()
                 { 
@@ -397,6 +405,148 @@ namespace CognitiveSearch.UI.Controllers
             var graphJson = graphGenerator.GetFacetGraphNodes(query, "keyPhrases");
 
             return graphJson;
+        }
+
+        [HttpPost]
+        public IActionResult getArrayOfChars(string id)
+        {
+            //Redisplay all past annotations
+            // connect to storage account
+            CloudStorageAccount storageAccount = new CloudStorageAccount(
+            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            var allAnnotations = new List<Annotation>();
+            TableContinuationToken token1 = null;
+            do
+            {
+                var x1 = new TableQuery<Annotation>();
+                var queryResult1 = Task.Run(() => Annotations.ExecuteQuerySegmentedAsync(x1, token1)).GetAwaiter().GetResult();
+                foreach (var item in queryResult1.Results)
+                {
+                    allAnnotations.Add(item);
+                }
+                token1 = queryResult1.ContinuationToken;
+            } while (token1 != null);
+
+            var allDocAnnotations = new List<Annotation>();
+            foreach (var annotation in allAnnotations)
+            {
+                if (annotation.DocumentID == id)
+                {
+                    allDocAnnotations.Add(annotation);
+                }
+            }
+           
+
+            var textAnnotations = new List<Annotation>();
+            var entityAnnotations = new List<Annotation>();
+
+            foreach (var annotation in allDocAnnotations)
+            {
+                if (annotation.ClassificationID.StartsWith("T") )
+                {
+                    textAnnotations.Add(annotation);
+                }else if (annotation.ClassificationID.StartsWith("E"))
+                {
+                    entityAnnotations.Add(annotation);
+                }
+            }
+
+            int c = 0;
+            string[] textStartChars = new string[textAnnotations.Count()];
+            string[] textEndChars = new string[textAnnotations.Count()];
+            Annotation[] tAnnotations = new Annotation[textAnnotations.Count()];
+            foreach (var item in textAnnotations)
+            {
+                textStartChars[c] = item.StartCharLocation;
+                textEndChars[c] = item.EndCharLocation;
+                tAnnotations[c] = item;
+                c++;
+            }
+
+            int ch = 0;
+            string[] entityStartChars = new string[entityAnnotations.Count()];
+            string[] entityEndChars = new string[entityAnnotations.Count()];
+            Annotation[] eAnnotations = new Annotation[entityAnnotations.Count()];
+            foreach (var item in entityAnnotations)
+            {
+                entityStartChars[ch] = item.StartCharLocation;
+                entityEndChars[ch] = item.EndCharLocation;
+                eAnnotations[ch] = item;
+                ch++;
+            }
+
+            return new JsonResult(new DocumentResult { textStartChars = textStartChars, textEndChars = textEndChars, entityStartChars = entityStartChars, entityEndChars = entityEndChars, textAnnotations = tAnnotations, entityAnnotations = eAnnotations });
+        }
+
+        public async Task<IActionResult> PartialView(string id)
+        {
+            string pKey = id.Trim('A');
+            string rKey = id;
+
+            Annotation newAnnotation = await GetAnnotation(pKey, rKey);
+            List<string> comments = await GetComments(pKey, rKey);
+
+            return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments });
+        }
+
+        async Task<Annotation> GetAnnotation(string pKey, string rKey)
+        {
+            CloudStorageAccount storageAccount = new CloudStorageAccount(
+            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
+            TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
+            Annotation annotation = query4.Result as Annotation;
+
+            return annotation;
+        }
+
+        async Task<List<string>> GetComments(string pKey, string rKey)
+        {
+            CloudStorageAccount storageAccount = new CloudStorageAccount(
+            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
+            TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
+            Annotation annotation = query4.Result as Annotation;
+
+            var allComments = new List<Comment>();
+            CloudTable Comments = tableClient.GetTableReference("Comments");
+            TableOperation retrieveOperation5 = TableOperation.Retrieve<Comment>(pKey, rKey);
+            TableContinuationToken token1 = null;
+            do
+            {
+                var x1 = new TableQuery<Comment>();
+                var queryResult1 = Task.Run(() => Comments.ExecuteQuerySegmentedAsync(x1, token1)).GetAwaiter().GetResult();
+                foreach (var item in queryResult1.Results)
+                {
+                    allComments.Add(item);
+                }
+                token1 = queryResult1.ContinuationToken;
+            } while (token1 != null);
+
+            var allAnnComments = new List<string>();
+            foreach (var comment in allComments)
+            {
+                if (comment.AnnotationID == annotation.AnnotationID)
+                {
+                    allAnnComments.Add(comment.CommentText);
+                }
+            }
+
+            return allAnnComments;
         }
     }
 }

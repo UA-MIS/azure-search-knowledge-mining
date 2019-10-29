@@ -6,6 +6,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static CognitiveSearch.UI.Models.Annotations;
+
 
 namespace CognitiveSearch.UI
 {
@@ -18,5 +20,13 @@ namespace CognitiveSearch.UI
         public string Token { get; set; }
         public List<object> Tags { get; set; }
         public string SearchId { get; set; }
+        public string[] textStartChars { get; set; }
+        public string[] textEndChars { get; set; }
+        public string[] entityStartChars { get; set; }
+        public string[] entityEndChars { get; set; }
+        public Annotation[] entityAnnotations { get; set; }
+        public Annotation[] textAnnotations { get; set; }
+        public Annotation annotation { get; set; }
+        public List<string> comments { get; set; }
     }
 }

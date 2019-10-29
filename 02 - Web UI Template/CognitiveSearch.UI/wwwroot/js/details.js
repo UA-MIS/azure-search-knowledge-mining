@@ -17,6 +17,41 @@ $('#prev-control').click(function () {
     }
 });
 
+function getTextAnnotations() {
+
+    var items = document.getElementsByName("saveInfo");
+    var id = items[0].value;
+
+    $.ajax({
+        type: "POST",
+        url: "/Home/getArrayOfChars",
+        data: { id: id },
+        success: function (data) {
+            startChars = data.textStartChars;
+            endChars = data.textEndChars;
+            annotations = data.textAnnotations;
+            textRange(startChars, endChars, annotations);
+        }
+    });
+}
+function getEntityAnnotations() {
+
+    var items = document.getElementsByName("saveInfo");
+    var id = items[0].value;
+
+    $.ajax({
+        type: "POST",
+        url: "/Home/getArrayOfChars",
+        data: { id: id },
+        success: function (data) {
+            startChars = data.entityStartChars;
+            endChars = data.entityEndChars;
+            annotations = data.entityAnnotations;
+            entityRange(startChars, endChars, annotations);
+        }
+    });
+}
+
 // Details
 function ShowDocument(id) {
     $.post('/home/getdocumentbyid',
@@ -25,10 +60,12 @@ function ShowDocument(id) {
         },
         function (data) {
             result = data.result;
+            chars = data.chars;
 
             var pivotLinksHTML = "";
 
             $('#details-pivot-content').html("");
+            $('#Highlight-Buttons').html("");
             $('#reference-viewer').html("");
             $('#tag-viewer').html("");
             $('#details-viewer').html("").css("display", "none");
@@ -39,13 +76,22 @@ function ShowDocument(id) {
             var transcriptContainerHTML = htmlDecode(result.content.trim());
             var fileName = "File";
 
+            
+
+
+            $('#Highlight-Buttons').html(`<div style="text-align:center;"><input type="button" style="color: #fff; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="getTextAnnotations()" value="Text Classification Annotations">
+                                            &nbsp <input type="button" style="color: #fff; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="getEntityAnnotations()" value="Entity Classification Annotations"></div>
+</br>                                          
+<div style="text-align:center;"> <span style="background-color: yellow"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Text &nbsp &nbsp &nbsp  <span style="background-color: chartreuse"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Entity</div>
+   
+                                            <div><input type="hidden" id="docID" name="saveInfo" value= ${id}></div>`);
+
             $('#details-pivot-content').html(`<div id="file-pivot" class="ms-Pivot-content" data-content="file">
                                             <div id="file-viewer" style="height: 100%;"></div>
                                         </div>
-                                        <div><input type="hidden" id="docID" name="saveInfo" value= ${id}></div>
                                         <div id="transcript-pivot" class="ms-Pivot-content" data-content="transcript">
                                             <div id="transcript-viewer" style="height: 100%;">
-                                                <div id='transcript-div'>
+                                                <div class="panel-body context" id='transcript-div'>
                                                     <pre id="transcript-viewer-pre"></pre>
                                                 </div>
                                             </div>
