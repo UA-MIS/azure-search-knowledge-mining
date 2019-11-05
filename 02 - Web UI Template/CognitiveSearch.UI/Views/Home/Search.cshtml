@@ -74,14 +74,6 @@
                             <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
                         </div>
                         <br />
-                        <div style="text-align: center;">
-                            <button id="accept-btn" onclick="thumbsUp()" style="background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;">
-                                <span class="glyphicon glyphicon-thumbs-up"> Accept </span>
-                            </button>
-                            <button id="deny-btn" onclick="thumbsDown()" style="background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;">
-                                <span class="glyphicon glyphicon-thumbs-down"> Deny </span>
-                            </button>
-                        </div>
                         <div style="text-align:center; ">
                             <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 10%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv1()"> Text Classification </button>
 
@@ -339,9 +331,11 @@ function makeEditableAndHighlightText(colour, annotation) {
     // Use HiliteColor since some browsers apply BackColor to the whole block
     if (!document.execCommand("HiliteColor", false, colour)) {
         document.execCommand("BackColor", false, colour);
-        document.execCommand("insertHTML", false, '<a style="background-color: yellow" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        document.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
     } else {
-        document.execCommand("insertHTML", false, '<a style="background-color: yellow" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        var link = document.createElement("a");
+        link.innerHTML = 
+        document.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
         document.designMode = "off";
     }
 
@@ -363,29 +357,12 @@ function makeEditableAndHighlightText(colour, annotation) {
         // Use HiliteColor since some browsers apply BackColor to the whole block
         if (!document.execCommand("HiliteColor", false, colour)) {
             document.execCommand("BackColor", false, colour);
-            document.execCommand("insertHTML", false, '<a style="background-color: chartreuse" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            document.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
         } else {
-            document.execCommand("insertHTML", false, '<a style="background-color: chartreuse" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            document.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
             document.designMode = "off";
         }
 
-    }
-
-    function callPV(id) {
-        $.ajax({
-            type: "POST",
-            url: "/Home/PartialView",
-            data: { id: id  },
-            success: function (data) {
-                var annID = data.annotation.annotationID;
-                var text = data.annotation.highlightedText;
-                var comments = data.comments;
-                var result = "ID: " + annID + "\r\n"
-                    + "Annotation: " + text + "\r\n"
-                    + "Annotation Comment: " + comments;
-                alert(result);
-            }
-        });
     }
 
 function highlightText(colour, annotation) {
@@ -403,12 +380,17 @@ function highlightText(colour, annotation) {
         // IE <= 8 case
         range = document.selection.createRange();
         range.execCommand("BackColor", false, colour);
-        range.execCommand("insertHTML", false, '<a style="background-color: yellow" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
-    }
+        var id = annotation.annotationID;
+        range.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+    } else {
+            var id = annotation.annotationID;
+            range.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        }
     }
 
     function highlightEntity(colour, annotation) {
         var range, sel;
+        var id = annotation.annotationID;
         if (window.getSelection) {
             // IE9 and non-IE
             try {
@@ -422,10 +404,46 @@ function highlightText(colour, annotation) {
             // IE <= 8 case
             range = document.selection.createRange();
             range.execCommand("BackColor", false, colour);
-            range.execCommand("insertHTML", false, '<a style="background-color: chartreuse" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            range.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        }
+        else {
+            range.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
         }
     }
-    
+
+        function callPV(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Home/PartialView",
+            data: { id: id  },
+            success: function (data) {
+                var annID = data.annotation.annotationID;
+                var text = data.annotation.highlightedText;
+                var comments = data.comments;
+                //var result = "ID: " + annID + "\r\n"
+                //    + "Annotation: " + text + "\r\n"
+                //    + "Annotation Comment: " + comments;
+                //document.getElementById("demo").innerHTML = "<p>ID: " + annID + "\r\n"
+                //    + "Annotation: " + text + "\r\n"
+                //    + "Annotation Comment: " + comments + "</p>" + "<div style='text-align: center;'>"
+                //           + "<button id='accept-btn' onclick='thumbsUp()' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
+                //             +   "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>"
+                //            + "<button id='deny-btn' onclick='thumbsDown()' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
+                //    + "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button></div>";
+                //document.getElementById("demo").style.display = "block";
+                //alert(result);
+                var popup = document.getElementById("myPopup");
+                popup.innerHTML = "<p>ID: " + annID + "<br />"
+                    + "Annotation: " + text + "<br />"
+                    + "Annotation Comment: " + comments + "</p>" + "<div style='text-align: center;'>"
+                           + "<button id='accept-btn' onclick='thumbsUp()' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
+                             +   "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>"
+                            + "<button id='deny-btn' onclick='thumbsDown()' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
+                    + "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button></div>";
+                popup.classList.toggle("show");
+            }
+        });
+    }
 
     function textRange(startChars, endChars, annotations) {
         

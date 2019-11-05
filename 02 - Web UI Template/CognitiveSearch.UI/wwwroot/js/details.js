@@ -52,6 +52,7 @@ function getEntityAnnotations() {
     });
 }
 
+
 // Details
 function ShowDocument(id) {
     $.post('/home/getdocumentbyid',
@@ -81,10 +82,13 @@ function ShowDocument(id) {
 
             $('#Highlight-Buttons').html(`<div style="text-align:center;"><input type="button" style="color: #fff; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="getTextAnnotations()" value="Text Classification Annotations">
                                             &nbsp <input type="button" style="color: #fff; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="getEntityAnnotations()" value="Entity Classification Annotations"></div>
-</br>                                          
-<div style="text-align:center;"> <span style="background-color: yellow"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Text &nbsp &nbsp &nbsp  <span style="background-color: chartreuse"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Entity</div>
+                                                </br>                                          
+                                            <div style="text-align:center;"> <span style="background-color: yellow"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Text &nbsp &nbsp &nbsp  <span style="background-color: chartreuse"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Entity</div>
    
-                                            <div><input type="hidden" id="docID" name="saveInfo" value= ${id}></div>`);
+                                            <div><input type="hidden" id="docID" name="saveInfo" value= ${id}></div>
+
+                            
+                                        <div class="popup"><span class="popuptext" id="myPopup"></span></div>`);
 
             $('#details-pivot-content').html(`<div id="file-pivot" class="ms-Pivot-content" data-content="file">
                                             <div id="file-viewer" style="height: 100%;"></div>
