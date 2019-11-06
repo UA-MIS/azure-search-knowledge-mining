@@ -331,11 +331,11 @@ function makeEditableAndHighlightText(colour, annotation) {
     // Use HiliteColor since some browsers apply BackColor to the whole block
     if (!document.execCommand("HiliteColor", false, colour)) {
         document.execCommand("BackColor", false, colour);
-        document.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
     } else {
         var link = document.createElement("a");
         link.innerHTML = 
-        document.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
         document.designMode = "off";
     }
 
@@ -357,9 +357,9 @@ function makeEditableAndHighlightText(colour, annotation) {
         // Use HiliteColor since some browsers apply BackColor to the whole block
         if (!document.execCommand("HiliteColor", false, colour)) {
             document.execCommand("BackColor", false, colour);
-            document.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
         } else {
-            document.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             document.designMode = "off";
         }
 
@@ -381,10 +381,10 @@ function highlightText(colour, annotation) {
         range = document.selection.createRange();
         range.execCommand("BackColor", false, colour);
         var id = annotation.annotationID;
-        range.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+        range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
     } else {
             var id = annotation.annotationID;
-            range.execCommand("insertHTML", false, '<a style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
         }
     }
 
@@ -404,10 +404,10 @@ function highlightText(colour, annotation) {
             // IE <= 8 case
             range = document.selection.createRange();
             range.execCommand("BackColor", false, colour);
-            range.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
         }
         else {
-            range.execCommand("insertHTML", false, '<a style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</a>');
+            range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
         }
     }
 
