@@ -137,7 +137,32 @@ namespace CognitiveSearch.UI.Controllers
                 await DeletedComments.CreateIfNotExistsAsync();
             }
             CreateDeletedCommentTableAsync();
-            
+
+            //Set all doc classifications to null
+            var allDocuments = new List<Documents>();
+            TableContinuationToken token1 = null;
+            do
+            {
+                var x1 = new TableQuery<Document>();
+                var queryResult1 = Task.Run(() => Documents.ExecuteQuerySegmentedAsync(x1, token1)).GetAwaiter().GetResult();
+                foreach (var item in queryResult1.Results)
+                {
+                    string result = item.DocClassID.Substring(0, 2);
+                    if (result != "DC")
+                    {
+                        Document document = item as Document;
+                        document.DocClassID = "null";
+                        TableOperation insertOperation3 = TableOperation.Replace(document);
+                        async void UpdateDocumentEntities()
+                        {
+                            await Documents.ExecuteAsync(insertOperation3);
+                        }
+                        UpdateDocumentEntities();
+                    }
+                }
+                token1 = queryResult1.ContinuationToken;
+            } while (token1 != null);
+
             //creating document classification list for dropdown list
             List<DocClassification> docClassificationList = new List<DocClassification>();
             TableContinuationToken token2 = null;
