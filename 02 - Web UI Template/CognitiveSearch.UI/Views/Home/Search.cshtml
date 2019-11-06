@@ -420,10 +420,12 @@ function highlightText(colour, annotation) {
                 var annID = data.annotation.annotationID;
                 var text = data.annotation.highlightedText;
                 var comments = data.comments;
+                var classification = data.classification;
                 var popup = document.getElementById("myPopup");
                 popup.innerHTML = "<br /><div style='text-align: center;'><strong><u>DETAILS</u></strong></div>" + "<p><br /><strong>ID:</strong> " + annID + "<br />"
                     + "<strong>Annotation:</strong> " + text + "<br />"
-                    + "<strong>Annotation Comment:</strong> " + comments + "</p>" + "<div style='text-align: center;'>" + "<button id='accept-btn' onclick='thumbsUp()' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
+                    + "<strong>Annotation Comment:</strong> " + comments + "<br />"
+                    + "<strong>Classification:</strong> " + classification + "</p>" + "<div style='text-align: center;'>" + "<button id='accept-btn' onclick='thumbsUp()' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
                              +   "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>"
                             + "<button id='deny-btn' onclick='thumbsDown()' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
                     + "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button></div>";
