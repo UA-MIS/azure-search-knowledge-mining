@@ -7,7 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static CognitiveSearch.UI.Models.Annotations;
-
+using static CognitiveSearch.UI.Models.EntityClassifications;
+using static CognitiveSearch.UI.Models.TextClassifications;
 
 namespace CognitiveSearch.UI
 {
@@ -28,5 +29,8 @@ namespace CognitiveSearch.UI
         public Annotation[] textAnnotations { get; set; }
         public Annotation annotation { get; set; }
         public List<string> comments { get; set; }
+        //public TextClassification textClassification { get; set; }
+        //public EntityClassification entityClassification { get; set; }
+        public string classification { get; set; }
     }
 }

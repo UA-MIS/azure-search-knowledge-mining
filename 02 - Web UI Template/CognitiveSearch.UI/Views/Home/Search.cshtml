@@ -380,9 +380,10 @@ function makeEditableAndHighlightText(colour, annotation) {
                 var annID = data.annotation.annotationID;
                 var text = data.annotation.highlightedText;
                 var comments = data.comments;
+                var classification = data.classification;               
                 var result = "ID: " + annID + "\r\n"
                     + "Annotation: " + text + "\r\n"
-                    + "Annotation Comment: " + comments;
+                    + "Annotation Comment: " + comments + "\r\n" + "Classification: " + classification;
                 alert(result);
             }
         });

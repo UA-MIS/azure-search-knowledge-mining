@@ -486,11 +486,25 @@ namespace CognitiveSearch.UI.Controllers
         {
             string pKey = id.Trim('A');
             string rKey = id;
+            string classification = "";
 
             Annotation newAnnotation = await GetAnnotation(pKey, rKey);
             List<string> comments = await GetComments(pKey, rKey);
 
-            return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments });
+            if (newAnnotation.ClassificationID.StartsWith("T"))
+            {
+                TextClassification textClassification = await GetTextClassifications(pKey, rKey);
+                classification = textClassification.Classification;
+                //return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, textClassification = textClassification });
+            }
+            else if (newAnnotation.ClassificationID.StartsWith("E"))
+            {
+                EntityClassification entityClassification = await GetEntityClassifications(pKey, rKey);
+                classification = entityClassification.Classification;
+                //return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, entityClassification = entityClassification });
+            }
+
+            return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, classification = classification });
         }
 
         async Task<Annotation> GetAnnotation(string pKey, string rKey)
@@ -506,8 +520,94 @@ namespace CognitiveSearch.UI.Controllers
             TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
             Annotation annotation = query4.Result as Annotation;
 
+            //annotation.ClassificationID
+
             return annotation;
         }
+
+        ////text redisplay
+       async Task<TextClassification> GetTextClassifications(string pKey, string rKey)
+        {
+            CloudStorageAccount storageAccount = new CloudStorageAccount(
+           new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+           "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
+            TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
+            Annotation annotation = query4.Result as Annotation;
+
+            CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
+            var allTextClassification = new List<TextClassification>();
+            TableContinuationToken token2 = null;
+            do
+            {
+                var x2 = new TableQuery<TextClassification>();
+                var queryResult2 = Task.Run(() => TextClassifications.ExecuteQuerySegmentedAsync(x2, token2)).GetAwaiter().GetResult();
+                foreach (var item2 in queryResult2.Results)
+                {
+                    allTextClassification.Add(item2);
+                }
+                token2 = queryResult2.ContinuationToken;
+            } while (token2 != null);
+
+            TextClassification textClassification = new TextClassification();
+
+            foreach (var item in allTextClassification)
+            {
+                if (item.TextClassID == annotation.ClassificationID )
+                {
+                    textClassification = item;
+                }
+            }
+
+
+            return textClassification; 
+        }
+
+        ////entity redisplay
+        async Task<EntityClassification> GetEntityClassifications(string pKey, string rKey)
+        {
+            CloudStorageAccount storageAccount = new CloudStorageAccount(
+           new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+           "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
+            TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
+            Annotation annotation = query4.Result as Annotation;
+
+            CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
+            var allEntityClassification = new List<EntityClassification>();
+            TableContinuationToken token3 = null;
+            do
+            {
+                var x3 = new TableQuery<EntityClassification>();
+                var queryResult3 = Task.Run(() => EntityClassifications.ExecuteQuerySegmentedAsync(x3, token3)).GetAwaiter().GetResult();
+                foreach (var item3 in queryResult3.Results)
+                {
+                    allEntityClassification.Add(item3);
+                }
+                token3 = queryResult3.ContinuationToken;
+            } while (token3 != null);
+
+            EntityClassification entityClassification = new EntityClassification();
+
+            foreach (var item in allEntityClassification)
+            {
+                if (item.EntityClassID == annotation.ClassificationID)
+                {
+                    entityClassification = item;
+                }
+            }
+
+            return entityClassification;
+        }
+
 
         async Task<List<string>> GetComments(string pKey, string rKey)
         {
