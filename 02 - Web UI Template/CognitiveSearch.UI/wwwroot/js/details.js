@@ -86,9 +86,7 @@ function ShowDocument(id) {
                                             <div style="text-align:center;"> <span style="background-color: yellow"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Text &nbsp &nbsp &nbsp  <span style="background-color: chartreuse"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Entity</div>
    
                                             <div><input type="hidden" id="docID" name="saveInfo" value= ${id}></div>
-
-                            
-                                        <div class="popup"><span class="popuptext" id="myPopup"></span></div>`);
+                                                <span id="myPopup"></span>`);
 
             $('#details-pivot-content').html(`<div id="file-pivot" class="ms-Pivot-content" data-content="file">
                                             <div id="file-viewer" style="height: 100%;"></div>
