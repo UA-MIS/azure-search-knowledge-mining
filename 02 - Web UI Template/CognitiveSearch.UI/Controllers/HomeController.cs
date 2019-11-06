@@ -673,5 +673,60 @@ namespace CognitiveSearch.UI.Controllers
 
             return allAnnComments;
         }
+
+       public  async Task<IActionResult> getDocClass(string id)
+        {
+            string docClassification = "";
+            string classID = "";
+         
+                // connect to storage account
+                CloudStorageAccount storageAccount = new CloudStorageAccount(
+                new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+                "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+
+                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+                CloudTable Documents = tableClient.GetTableReference("Documents");
+                TableOperation retrieveOperation4 = TableOperation.Retrieve<Document>(id, id + "_Doc");
+                TableResult query4 = await Documents.ExecuteAsync(retrieveOperation4);
+
+                // Update the document entity in the table.
+                Document document = query4.Result as Document;
+
+            if (document.DocClassID != "null")
+            {
+                CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
+                var allDocClassifications = new List<DocClassification>();
+                TableContinuationToken token3 = null;
+                do
+                {
+                    var x3 = new TableQuery<DocClassification>();
+                    var queryResult3 = Task.Run(() => DocClassifications.ExecuteQuerySegmentedAsync(x3, token3)).GetAwaiter().GetResult();
+                    foreach (var item3 in queryResult3.Results)
+                    {
+                        allDocClassifications.Add(item3);
+                    }
+                    token3 = queryResult3.ContinuationToken;
+                } while (token3 != null);
+
+              
+
+                foreach (var item in allDocClassifications)
+                {
+                    if (item.DocClassID == document.DocClassID)
+                    {
+                        classID = item.DocClassID;
+                        docClassification = item.Classification;
+                    }
+                }
+            }
+            else
+            {
+                classID = "null";
+                docClassification = "Document Classification";
+            }
+                return new JsonResult(new DocumentResult { classID = classID, docClassification = docClassification });
+            
+        }
     }
 }
