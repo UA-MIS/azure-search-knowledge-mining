@@ -67,9 +67,10 @@ namespace CognitiveSearch.UI.Controllers
             TempData["applicationInstrumentationKey"] = _configuration.GetSection("InstrumentationKey")?.Value;
 
             // connect to storage account
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
@@ -239,9 +240,10 @@ namespace CognitiveSearch.UI.Controllers
             int commentCounter = 1;
 
             // connect to storage account
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
@@ -437,9 +439,10 @@ namespace CognitiveSearch.UI.Controllers
         {
             //Redisplay all past annotations
             // connect to storage account
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
@@ -534,9 +537,11 @@ namespace CognitiveSearch.UI.Controllers
 
         async Task<Annotation> GetAnnotation(string pKey, string rKey)
         {
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            // connect to storage account
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
@@ -545,17 +550,17 @@ namespace CognitiveSearch.UI.Controllers
             TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
             Annotation annotation = query4.Result as Annotation;
 
-            //annotation.ClassificationID
-
             return annotation;
         }
 
         ////text redisplay
        async Task<TextClassification> GetTextClassifications(string pKey, string rKey)
         {
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-           new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-           "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            // connect to storage account
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
@@ -595,9 +600,11 @@ namespace CognitiveSearch.UI.Controllers
         ////entity redisplay
         async Task<EntityClassification> GetEntityClassifications(string pKey, string rKey)
         {
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-           new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-           "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            // connect to storage account
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
@@ -636,9 +643,11 @@ namespace CognitiveSearch.UI.Controllers
 
         async Task<List<string>> GetComments(string pKey, string rKey)
         {
-            CloudStorageAccount storageAccount = new CloudStorageAccount(
-            new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-            "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
+            // connect to storage account
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
