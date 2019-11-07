@@ -56,7 +56,7 @@
 
                         <div style="text-align: center;">
                             <select name="dropDowns" id="docType" style="width: 455px">
-                                <option value=null selected="selected">Document Classification</option>
+                                <option id="option" value=null selected="selected">Document Classification</option>
                                 @{
                                     @foreach (var docClass in ViewBag.docClassList)
                                     {
@@ -494,5 +494,16 @@ function highlightText(colour, annotation) {
 		else if (div.style.display === "none") {
 			document.getElementById("btn1").disabled = false;
 		}
-	}
+    }
+
+    
+</script>
+
+
+<script>
+    function docClassDisplay(classID, docClassification) {
+        var list = document.getElementById("option");
+        list.value = classID;
+        list.innerHTML = docClassification;
+    }
 </script>

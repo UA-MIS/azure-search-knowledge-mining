@@ -6,6 +6,7 @@ $('#next-control').click(function () {
 
     if (idx < results.length) {
         ShowDocument(idx + 1);
+        
     }
 });
 
@@ -14,6 +15,7 @@ $('#prev-control').click(function () {
 
     if (idx > 0) {
         ShowDocument(idx - 1);
+        
     }
 });
 
@@ -119,7 +121,19 @@ function ShowDocument(id) {
 
             //Log Click Events
             LogClickAnalytics(result.metadata_storage_name, 0);
+           
         });
+    $.ajax({
+        type: "POST",
+        url: "/Home/getDocClass",
+        data: { id: id },
+        success: function (data) {
+            
+                docClassDisplay(data.classID, data.docClassification);
+           
+        }
+    });
+   
 }
 
 function GetMatches(string, regex, index) {
