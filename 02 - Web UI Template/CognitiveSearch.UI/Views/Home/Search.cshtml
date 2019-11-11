@@ -105,7 +105,7 @@
                                     </div>}
                                 <br />
                                 <form style="text-align: center;">
-                                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;"></textarea>
+                                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;" placeholder="Add a comment to your annotation..."></textarea>
                                 </form>
                                 <br />
                                 <div style="text-align:center;">
@@ -473,15 +473,19 @@ function highlightText(colour, annotation) {
                 var annID = data.annotation.annotationID;
                 var text = data.annotation.highlightedText;
                 var comments = data.comments;
-                var classification = data.classification;
+				var classification = data.classification;
+				var deny = data.annotation.deny;
+				var accept = data.annotation.accept;
                 var popup = document.getElementById("myPopup");
                 popup.innerHTML = "<br /><div style='text-align: center;'><strong><u>DETAILS</u></strong></div>" + "<p><br /><strong>ID:</strong> " + annID + "<br />"
                     + "<strong>Annotation:</strong> " + text + "<br />"
                     + "<strong>Annotation Comment:</strong> " + comments + "<br />"
-                    + "<strong>Classification:</strong> " + classification + "</p>" + "<div style='text-align: center;'>" + "<button id='accept-btn' onclick='thumbsUp()' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
-                             +   "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>"
-                            + "<button id='deny-btn' onclick='thumbsDown()' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
-                    + "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button></div>";
+                    + "<strong>Classification:</strong> " + classification + "</p>" + "<div style='text-align: center;'>" + "<div style='text-align: center;'>" + "<button id='accept-btn'  value = 'likes' onclick='thumbsUp(" + '"' + annID + '"' + ", " + '"' + accept + '"' + ")' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
+						+ "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>" 
+						+ "<span id = 'likeCount'>" + accept + " </span>"
+						+ "<button id='deny-btn' onclick='thumbsDown(" + '"' + annID + '"' + ", " + '"' + deny + '"' + ")' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
+						+ "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button>"
+						+ "<span id = 'denyCount'>" + deny + " </span></div>";
                 popup.classList.toggle("show");
             }
         });
@@ -556,5 +560,41 @@ function highlightText(colour, annotation) {
         var list = document.getElementById("option");
         list.value = classID;
         list.innerHTML = docClassification;
-    }
+	}
+
+
+	function thumbsUp(annID, accept)
+		{
+			let likes = accept;
+			likes++;
+			var id = annID;
+
+			$.ajax({
+				type: "POST",
+				url: "/Home/SaveAcceptValue",
+				data: { id: id, likes: likes },
+				success: function () {
+					callPV(id);
+				}
+			});
+
+		}
+	
+		
+
+	function thumbsDown(annID, deny) {
+
+		let dislikes = deny;
+		dislikes++;
+		var id = annID;
+
+		$.ajax({
+			type: "POST",
+			url: "/Home/SaveDenyValue",
+			data: { id: id, dislikes: dislikes },
+			success: function () {
+				callPV(id);
+			}
+		});
+	}
 </script>
