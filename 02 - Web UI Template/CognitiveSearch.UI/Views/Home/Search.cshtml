@@ -52,7 +52,7 @@
                                 var docClassificationList = ViewBag.docClassList;
 
                                 <div style="text-align: center;">
-                                    <select name="dropDowns" id="docType" style="width: 455px">
+                                    <select name="dropDowns" id="docType" style="width: 75%">
                                         <option id="option" value=null selected="selected">Document Classification</option>
                                         
                                             @foreach (var docClass in ViewBag.docClassList)
@@ -70,21 +70,21 @@
                                     </form>
                                     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
                                 <br />
-                                    <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv1()"> Text Classification </button>
+                                    <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv1()"> Text Classification </button>
 
-                                    <button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv2()"> Entity Classification</button>
+                                    <button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv2()"> Entity Classification</button>
                                 </div>
                                 
                                     var entityClassificationList = ViewBag.entityClassList;
 
                                     <div hidden name="dropDownDivs" id="item2" style="text-align: center; display:none">
-                                        <select name="dropDowns" id="entityType" style="width: 455px">
+                                        <select name="dropDowns" id="entityType" style="width: 75%">
                                             <option value=null selected="selected">Entity Classification</option>
                                             
                                                 @foreach (var entityClass in ViewBag.entityClassList)
-{
+                                                    {
                                                     <option value=@entityClass.EntityClassID>@entityClass.Classification</option>
-}
+                                                    }
                                             
                                         </select>
 
@@ -93,19 +93,19 @@
                                     var textClassificationList = ViewBag.textClassList;
 
                                     <div hidden name="dropDownDivs" id="item1" style="text-align: center; display:none">
-                                        <select name="dropDowns" id="textType" style="width: 455px">
+                                        <select name="dropDowns" id="textType" style="width: 75%">
                                             <option value=null selected="selected">Text Classification</option>
                                             
                                                 @foreach (var textClass in ViewBag.textClassList)
-{
+                                                    {
                                                     <option value=@textClass.TextClassID>@textClass.Classification</option>
-}
+                                                    }
                                             
                                         </select>
                                     </div>}
                                 <br />
                                 <form style="text-align: center;">
-                                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none;"></textarea>
+                                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;"></textarea>
                                 </form>
                                 <br />
                                 <div style="text-align:center;">
@@ -252,52 +252,62 @@
         var entityClassID = dropDownitems[1].value;
         var textClassID = dropDownitems[2].value;
 
+        if (annotate != "" && (entityClassID != "null" || textClassID != "null")) {
+            $.ajax({
+                type: "POST",
+                url: "/Home/SaveAnnotations",
+                data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID, entityClassID: entityClassID, textClassID: textClassID, start: start, end: end },
+                success: function () {
+                    alert("Annotation has been saved.");
+                    //then reload the page.
+                    var items = document.getElementsByName("saveInfo");
+                    //annotate box
+                    items[1].value = "";
+                    //comment box
+                    items[2].value = "";
+                    //hidden start char box
+                    items[3].value = "";
+                    //hidden end char box
+                    items[4].value = "";
+                    //text and entity classification dropdowns
+                    var dropDownDivs = document.getElementsByName("dropDownDivs");
+                    var dropDowns = document.getElementsByName("dropDowns");
+                    var entityType = dropDownDivs[0];
+                    var textType = dropDownDivs[1];
+                    var entity = dropDowns[1];
+                    var text = dropDowns[2];
+                    entity.selectedIndex = 0;
+                    text.selectedIndex = 0;
+                    entityType.style.display = "none";
+                    textType.style.display = "none";
+                    if (entityType.style.display === "block") {
 
-        $.ajax({
-            type: "POST",
-            url: "/Home/SaveAnnotations",
-            data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID, entityClassID: entityClassID, textClassID: textClassID, start: start, end: end  },
-            success: function () {
-                alert("Annotation has been saved.");
-                //then reload the page.
-                var items = document.getElementsByName("saveInfo");
-                //annotate box
-                items[1].value = "";
-                //comment box
-                items[2].value = "";
-                //hidden start char box
-                items[3].value = "";
-                //hidden end char box
-                items[4].value = "";
-                //text and entity classification dropdowns
-                var dropDownDivs = document.getElementsByName("dropDownDivs");
-                var dropDowns = document.getElementsByName("dropDowns");
-                var entityType = dropDownDivs[0];
-                var textType = dropDownDivs[1];
-                var entity = dropDowns[1];
-                var text = dropDowns[2];
-                entity.selectedIndex = 0;
-                text.selectedIndex = 0;
-                entityType.style.display = "none";
-                textType.style.display = "none";
-                if (entityType.style.display === "block") {
+                        document.getElementById("btn1").disabled = true;
+                    }
+                    else if (entityType.style.display === "none") {
 
-			    document.getElementById("btn1").disabled = true;
-		        }
-		        else if (entityType.style.display === "none") {
+                        document.getElementById("btn1").disabled = false;
+                    }
+                    if (textType.style.display === "block") {
 
-			    document.getElementById("btn1").disabled = false;
+                        document.getElementById("btn2").disabled = true;
+                    }
+                    else if (textType.style.display === "none") {
+
+                        document.getElementById("btn2").disabled = false;
+                    }
                 }
-                if (textType.style.display === "block") {
-
-			    document.getElementById("btn2").disabled = true;
-		        }
-		        else if (textType.style.display === "none") {
-
-			    document.getElementById("btn2").disabled = false;
-                }
-            }
-        });
+            });
+        } else if (entityClassID == "null" && textClassID == "null") {
+            alert("Must have a text or entity classification to be saved.");
+        }
+        else if (annotate == "") {
+            alert("Must have an annotation to be saved.");
+        }
+        else {
+            alert("Make sure all fields are complete.");
+        }
+        
     }
 </script>
 <script>
