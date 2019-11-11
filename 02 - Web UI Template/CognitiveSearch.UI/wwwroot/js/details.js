@@ -2,16 +2,16 @@
 // Licensed under the MIT License.
 
 $('#next-control').click(function () {
-    var idx = parseInt($('#result-id').val());
+    var idx = parseInt($('#docID').val());
 
     if (idx < results.length) {
         ShowDocument(idx + 1);
-        
+
     }
 });
 
 $('#prev-control').click(function () {
-    var idx = parseInt($('#result-id').val());
+    var idx = parseInt($('#docID').val());
 
     if (idx > 0) {
         ShowDocument(idx - 1);
@@ -69,6 +69,7 @@ function ShowDocument(id) {
 
             $('#details-pivot-content').html("");
             $('#Highlight-Buttons').html("");
+            $('#Save-Annotation').html("");
             $('#reference-viewer').html("");
             $('#tag-viewer').html("");
             $('#details-viewer').html("").css("display", "none");
@@ -82,13 +83,16 @@ function ShowDocument(id) {
             
 
 
-            $('#Highlight-Buttons').html(`<div style="text-align:center;"><input type="button" style="color: #fff; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="getTextAnnotations()" value="Text Classification Annotations">
-                                            &nbsp <input type="button" style="color: #fff; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="getEntityAnnotations()" value="Entity Classification Annotations"></div>
-                                                </br>                                          
-                                            <div style="text-align:center;"> <span style="background-color: yellow"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Text &nbsp &nbsp &nbsp  <span style="background-color: chartreuse"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Entity</div>
-   
+            $('#Highlight-Buttons').html(`<div style="text-align:center;"><input type="button" style="color: #fff; margin: 5px; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="loading(); getTextAnnotations(); refreshTranscript();" value="Text Classification Annotations">
+                                            &nbsp <input type="button" style="color: #fff; margin: 5px; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="loading(); getEntityAnnotations(); refreshTranscript();" value="Entity Classification Annotations"></div></br>                                          
+                                            <div style="text-align:center;"> 
+                                            <span style="background-color: yellow"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Text 
+                                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+                                            <iframe src="https://giphy.com/embed/sSgvbe1m3n93G" id="classification-loading-indicator" style="display:none;" width="15" height="15" frameBorder="0" class="giphy-embed"></iframe><a href="https://giphy.com/gifs/juan-gabriel-sSgvbe1m3n93G"></a>
+                                            &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp 
+                                            <span style="background-color: chartreuse"> &nbsp &nbsp &nbsp &nbsp </span> &nbsp Entity</div>
                                             <div><input type="hidden" id="docID" name="saveInfo" value= ${id}></div>
-                                                <span id="myPopup"></span>`);
+                                            <span id="myPopup"></span>`);
 
             $('#details-pivot-content').html(`<div id="file-pivot" class="ms-Pivot-content" data-content="file">
                                             <div id="file-viewer" style="height: 100%;"></div>
@@ -134,6 +138,26 @@ function ShowDocument(id) {
         }
     });
    
+}
+
+function GetTheDocClass() {
+    $.ajax({
+        type: "POST",
+        url: "/Home/getDocClass",
+        data: { id: id },
+        success: function (data) {
+
+            docClassDisplay(data.classID, data.docClassification);
+
+        }
+    });
+}
+function loading() {
+    $('#classification-loading-indicator').show();
+}
+function refreshTranscript() {
+    var transcriptContainerHTML = htmlDecode(result.content.trim());
+    $('#transcript-viewer-pre').html(transcriptContainerHTML);
 }
 
 function GetMatches(string, regex, index) {

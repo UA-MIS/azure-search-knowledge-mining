@@ -2,8 +2,8 @@
 	 Licensed under the MIT License. -->
 
 @{
-	ViewData["Title"] = "Search Results";
-	ViewData["Path"] = "Home / Search Results";
+    ViewData["Title"] = "Search Results";
+    ViewData["Path"] = "Home / Search Results";
 }
 
 <!-- Pass controller data to view -->
@@ -15,543 +15,546 @@
 
 <!--Details Modal-->
 <div class="modal" id="details-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-	<div class="modal-dialog" role="document">
+	<div class="modal-dialog" role="document" style="height: 150%;">
 		<div class="modal-content">
 			<div id="details-modal-body" class="modal-body">
-				<div class="row" style="height: 100%;">
-					<div class="modal-control-group">
-						<span id="prev-control" class="modal-control"><i class="ms-Icon ms-Icon--ChevronLeftMed"></i></span>
-						<span id="next-control" class="modal-control"><i class="ms-Icon ms-Icon--ChevronRightMed"></i></span>
-						<span id="close-control" class="modal-control" data-dismiss="modal"><i class="ms-Icon ms-Icon--Clear"></i></span>
-					</div>
-					<div id="details-pivot" class="ms-Pivot col-md-8">
-						<ul id="details-pivot-links" class="ms-Pivot-links"></ul>
-						<div id="details-pivot-content">
-						</div>
-					</div>
-					<div id="tags-panel" class="col-md-4">
-						<div id="Highlight-Buttons"></div>
-						<br />
-						<div id="transcript-search-box" class="ms-SearchBox">
-							<input class="ms-SearchBox-field" type="text" value="" id="transcript-search-input" placeholder="Search...">
-							<label class="ms-SearchBox-label">
-								<i class="ms-SearchBox-icon ms-Icon ms-Icon--Search"></i>
-							</label>
-							<div class="ms-CommandButton ms-SearchBox-clear ms-CommandButton--noLabel">
-								<button class="ms-CommandButton-button">
-									<span class="ms-CommandButton-icon"><i class="ms-Icon ms-Icon--Clear"></i></span>
-									<span class="ms-CommandButton-label"></span>
-								</button>
-							</div>
-						</div>
-						<div id="details-viewer" style="display:none"></div>
-						<div id="tag-viewer"></div>
-						<hr />
-						<div id="reference-viewer"></div>
-					</div>
+                <div class="row" style="height: 75%;">
+                    <div class="modal-control-group">
+                        <span id="prev-control" class="modal-control"><i class="ms-Icon ms-Icon--ChevronLeftMed"></i></span>
+                        <span id="next-control" class="modal-control"><i class="ms-Icon ms-Icon--ChevronRightMed"></i></span>
+                        <span id="close-control" class="modal-control" data-dismiss="modal"><i class="ms-Icon ms-Icon--Clear"></i></span>
+                    </div>
+                    <div id="details-pivot" class="ms-Pivot col-md-8">
+                        <ul id="details-pivot-links" class="ms-Pivot-links"></ul>
+                        <div id="details-pivot-content">
+                        </div>
+                    </div>
+                    <div id="tags-panel" class="col-md-4">
+                        <div id="Highlight-Buttons"></div>
+                        <br />
+                        <div id="transcript-search-box" class="ms-SearchBox">
+                            <input class="ms-SearchBox-field" type="text" value="" id="transcript-search-input" placeholder="Search...">
+                            <label class="ms-SearchBox-label">
+                                <i class="ms-SearchBox-icon ms-Icon ms-Icon--Search"></i>
+                            </label>
+                            <div class="ms-CommandButton ms-SearchBox-clear ms-CommandButton--noLabel">
+                                <button class="ms-CommandButton-button">
+                                    <span class="ms-CommandButton-icon"><i class="ms-Icon ms-Icon--Clear"></i></span>
+                                    <span class="ms-CommandButton-label"></span>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="details-viewer" style="display:none"></div>
+                        <div id="tag-viewer"></div>
+                        <div>
+                            @*UA MIS ADDED HTML*@
+                            @{ <br />
+                                var docClassificationList = ViewBag.docClassList;
 
-					@*UA MIS ADDED HTML*@
-					@{
-	var docClassificationList = ViewBag.docClassList;
-
-						<div style="text-align: center;">
-							<select name="dropDowns" id="docType" style="width: 455px">
-								<option id="option" value=null selected="selected">Document Classification</option>
-								@{
-									@foreach (var docClass in ViewBag.docClassList)
+                                <div style="text-align: center;">
+                                    <select name="dropDowns" id="docType" style="width: 75%">
+                                        <option id="option" value=null selected="selected">Document Classification</option>
+                                        
+                                            @foreach (var docClass in ViewBag.docClassList)
 {
-										<option value=@docClass.DocClassID>@docClass.Classification</option>
+                                                <option value=@docClass.DocClassID>@docClass.Classification</option>
 }
-								}
-							</select>
-						</div>
-	}
-						<br />
-						<div class="log"></div>
-						<div style="text-align: center;">
-							<form class="col-md-pull-6" id="annotateForm" name="annotateForm" style="display:inline;">
-								<textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center;"></textarea>
-							</form>
-							<button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
-						</div>
-						<br />
-						<div style="text-align:center; ">
-							<button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 10%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv1()"> Text Classification </button>
+                                        
+                                    </select>
+                                </div>
+                                <br />
+                                <div class="log"></div>
+                                <div style="text-align: center;">
+                                    <form class="col-md-pull-6" id="annotateForm" name="annotateForm" style="display:inline;">
+                                        <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center;"></textarea>
+                                    </form>
+                                    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
+                                <br />
+                                    <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv1()"> Text Classification </button>
 
-							<button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 10%; border: 1px solid transparent;  font-size: 13px;" onClick="togglediv2()"> Entity Classification</button>
-						</div>
-						@{
-							var entityClassificationList = ViewBag.entityClassList;
+                                    <button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv2()"> Entity Classification</button>
+                                </div>
+                                
+                                    var entityClassificationList = ViewBag.entityClassList;
 
-							<div hidden id="item2" style="text-align: center; display:none">
-								<select name="dropDowns" id="entityType" style="width: 455px">
-									<option value=null selected="selected">Entity Classification</option>
-									@{
-										@foreach (var entityClass in ViewBag.entityClassList)
-										{
-											<option value=@entityClass.EntityClassID>@entityClass.Classification</option>
-										}
-									}
-								</select>
+                                    <div hidden name="dropDownDivs" id="item2" style="text-align: center; display:none">
+                                        <select name="dropDowns" id="entityType" style="width: 75%">
+                                            <option value=null selected="selected">Entity Classification</option>
+                                            
+                                                @foreach (var entityClass in ViewBag.entityClassList)
+                                                    {
+                                                    <option value=@entityClass.EntityClassID>@entityClass.Classification</option>
+                                                    }
+                                            
+                                        </select>
 
-							</div>
+                                    </div>
 
-							var textClassificationList = ViewBag.textClassList;
+                                    var textClassificationList = ViewBag.textClassList;
 
-							<div hidden id="item1" style="text-align: center; display:none">
-								<select name="dropDowns" id="textType" style="width: 455px">
-									<option value=null selected="selected">Text Classification</option>
-									@{
-										@foreach (var textClass in ViewBag.textClassList)
-										{
-											<option value=@textClass.TextClassID>@textClass.Classification</option>
-										}
-									}
-								</select>
-							</div>}
-						<br />
-						<form style="text-align: center;">
-							<textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none;"></textarea>
-						</form>
-						<br />
-						<div class="col-lg-offset-5" style="text-align:center;">
-							<button style="color: #fff; background-color: #0078d7; margin: 30px; width: 10%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
-						</div>
-						<div>
-							<form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
-								<textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
-								<textarea disabled id="endSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
-							</form>
-							<input id="chars" name="chars" type="hidden" value=@ViewBag.allStartAndEndChars>
+                                    <div hidden name="dropDownDivs" id="item1" style="text-align: center; display:none">
+                                        <select name="dropDowns" id="textType" style="width: 75%">
+                                            <option value=null selected="selected">Text Classification</option>
+                                            
+                                                @foreach (var textClass in ViewBag.textClassList)
+                                                    {
+                                                    <option value=@textClass.TextClassID>@textClass.Classification</option>
+                                                    }
+                                            
+                                        </select>
+                                    </div>}
+                                <br />
+                                <form style="text-align: center;">
+                                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;"></textarea>
+                                </form>
+                                <br />
+                                <div style="text-align:center;">
+                                    <button style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
+                                </div>
+                                <div>
+                                    <form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
+                                        <textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
+                                        <textarea disabled id="endSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
+                                    </form>
+                                    <input id="chars" name="chars" type="hidden" value=@ViewBag.allStartAndEndChars>
 
-						</div>
-					</div>
-				</div>
+                                </div>
+                            </div>
+                        <hr />
+                        <div id="reference-viewer"></div>
+                    </div>
+                    </div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<!--Search, Filters, and Facets-->
+<div id="results-container" class="row content-results">
+	<div class="col-md-2">
+		<div id="search-input-group" class="input-group">
+			<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
+			<span class="input-group-btn">
+				<button id="search-button" class="btn btn-default" onclick="Search();"><span class="ms-Icon ms-Icon--Search"></span></button>
+			</span>
+		</div>
+		<br />
+		<button style="width:100%" class="btn btn-default" onclick="EntityMapClick()">View Entity Map</button>
+		<br />
+		<br />
+		<div>
+			<div id="filterReset"></div>
+			<div class="widget-content">
+				<div id="facet-nav" class="facet-nav"></div>
 			</div>
 		</div>
 	</div>
 
-	<!--Search, Filters, and Facets-->
+	<!--Results-->
+	<div class="col-md-10">
+		<div style="margin:0 10px 10px 10px;">
+			<h2 id="doc-count" style="margin-top:-10px; font-size:14px; display:inline"></h2>
+			<div style="display:inline;position: relative;top:-10px;left:10px;">
+				<span id="loading-indicator" class="ms-Spinner ms-Spinner--large" style="display:none;"></span>
+			</div>
+		</div>
+		<div id="doc-details-div">
+			<div id="progress-indicator" class="ms-Spinner ms-Spinner--large" style="display:none;">
+				<div class="ms-Spinner-label">Fetching your results...</div>
+			</div>
+		</div>
+		<div class="clearfix">
+			<ul id="paginationFooter" class="pagination pull-right"></ul>
+		</div>
+	</div>
+</div>
+
+<div id="entity-map" style="display:none">
 	<div id="results-container" class="row content-results">
-		<div class="col-md-2">
-			<div id="search-input-group" class="input-group">
-				<input type="text" class="form-control" name="q" id="q" placeholder="Search...">
-				<span class="input-group-btn">
-					<button id="search-button" class="btn btn-default" onclick="Search();"><span class="ms-Icon ms-Icon--Search"></span></button>
-				</span>
-			</div>
-			<br />
-			<button style="width:100%" class="btn btn-default" onclick="EntityMapClick()">View Entity Map</button>
-			<br />
-			<br />
-			<div>
-				<div id="filterReset"></div>
-				<div class="widget-content">
-					<div id="facet-nav" class="facet-nav"></div>
-				</div>
-			</div>
-		</div>
+        <div class="col-md-2">
+            <div id="search-input-group" class="input-group">
+                <input type="text" class="form-control" name="e" id="e" placeholder="Search...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" onclick="SearchEntities();"><span class="ms-Icon ms-Icon--Search"></span></button>
+                </span>
+                <div style="display:inline;position: relative;top:-10px;left:10px;">
+                    <span id="entity-loading-indicator" class="ms-Spinner ms-Spinner--large" style="display:none;"></span>
+                </div>
+            </div>
 
-		<!--Results-->
-		<div class="col-md-10">
-			<div style="margin:0 10px 10px 10px;">
-				<h2 id="doc-count" style="margin-top:-10px; font-size:14px; display:inline"></h2>
-				<div style="display:inline;position: relative;top:-10px;left:10px;">
-					<span id="loading-indicator" class="ms-Spinner ms-Spinner--large" style="display:none;"></span>
-				</div>
-			</div>
-			<div id="doc-details-div">
-				<div id="progress-indicator" class="ms-Spinner ms-Spinner--large" style="display:none;">
-					<div class="ms-Spinner-label">Fetching your results...</div>
-				</div>
-			</div>
-			<div class="clearfix">
-				<ul id="paginationFooter" class="pagination pull-right"></ul>
-			</div>
-		</div>
+            <br />
+            <button style="width:100%" class="btn btn-default" onclick="EntityMapClick()">Return to Search Results</button>
+
+        </div>
+		<svg width="1430" height="600"></svg>
 	</div>
-
-	<div id="entity-map" style="display:none">
-		<div id="results-container" class="row content-results">
-			<div class="col-md-2">
-				<div id="search-input-group" class="input-group">
-					<input type="text" class="form-control" name="e" id="e" placeholder="Search...">
-					<span class="input-group-btn">
-						<button class="btn btn-default" onclick="SearchEntities();"><span class="ms-Icon ms-Icon--Search"></span></button>
-					</span>
-					<div style="display:inline;position: relative;top:-10px;left:10px;">
-						<span id="entity-loading-indicator" class="ms-Spinner ms-Spinner--large" style="display:none;"></span>
-					</div>
-				</div>
-
-				<br />
-				<button style="width:100%" class="btn btn-default" onclick="EntityMapClick()">Return to Search Results</button>
-
-			</div>
-			<svg width="1430" height="600"></svg>
-		</div>
-	</div>
+</div>
 
 
-	@*UA MIS CAPSTONE ADDED SCRIPT*@
+@*UA MIS CAPSTONE ADDED SCRIPT*@
 
-	<script>
-		// Function to get the Selected Text
-		function annotate() {
-			var selectedText = '';
+<script>
+	// Function to get the Selected Text
+	function annotate() {
+        var selectedText = '';
 
-			// window.getSelection
-			if (window.getSelection) {
-				selectedText = window.getSelection();
-			}
-			// document.getSelection
-			else if (document.getSelection) {
-				selectedText = document.getSelection();
-			}
-			// document.selection
-			else if (document.selection) {
-				selectedText = document.selection.createRange().text;
-			}
-			// To write the selected text into the textarea
-			document.annotateForm.selectedtext.value = selectedText;
-
-			var element = document.getElementById("transcript-viewer-pre");
-			var start = 0, end = 0;
-			var sel, range, priorRange;
-			if (typeof window.getSelection != "undefined") {
-				range = window.getSelection().getRangeAt(0);
-				priorRange = range.cloneRange();
-				priorRange.selectNodeContents(element);
-				priorRange.setEnd(range.startContainer, range.startOffset);
-				start = priorRange.toString().length;
-				end = start + range.toString().length;
-			}
-			else if (typeof document.selection != "undefined" && (sel = document.selection).type != "Control") {
-				range = sel.createRange();
-				priorRange = document.body.createTextRange();
-				priorRange.moveToElementText(element);
-				priorRange.setEndPoint("EndToStart", range);
-				start = priorRange.text.length - 1;
-				end = start + range.text.length;
-			}
-			document.annotateCharForm.startSelectedTextChar.value = start.toString();
-			document.annotateCharForm.endSelectedTextChar.value = end.toString();
+		// window.getSelection
+		if (window.getSelection) {
+            selectedText = window.getSelection();
 		}
-	</script>
-	<script>
-		// Function to save everything to table
-		function save() {
-
-			var items = document.getElementsByName("saveInfo");
-			var id = items[0].value;
-			var annotate = items[1].value;
-			var comment = items[2].value;
-			var start = items[3].value;
-			var end = items[4].value;
-
-			var dropDownitems = document.getElementsByName("dropDowns");
-			var docClassID = dropDownitems[0].value;
-			var entityClassID = dropDownitems[1].value;
-			var textClassID = dropDownitems[2].value;
-
-
-			$.ajax({
-				type: "POST",
-				url: "/Home/SaveAnnotations",
-				data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID, entityClassID: entityClassID, textClassID: textClassID, start: start, end: end },
-				success: function () {
-					alert("Annotation has been saved.");
-					location.reload(); // then reload the page.
-				}
-			});
+		// document.getSelection
+		else if (document.getSelection) {
+            selectedText = document.getSelection();
 		}
-	</script>
-	<script>
-		//Functions to highlight all previous annotations
-		function getTextNodesIn(node) {
-			var textNodes = [];
-			if (node.nodeType == 3) {
-				textNodes.push(node);
-			} else {
-				var children = node.childNodes;
-				for (var i = 0, len = children.length; i < len; ++i) {
-					textNodes.push.apply(textNodes, getTextNodesIn(children[i]));
-				}
-			}
-			return textNodes;
+		// document.selection
+		else if (document.selection) {
+            selectedText = document.selection.createRange().text;
+		}
+		// To write the selected text into the textarea
+        document.annotateForm.selectedtext.value = selectedText;
+
+        var element = document.getElementById("transcript-viewer-pre");
+        var start = 0, end = 0;
+        var sel, range, priorRange;
+        if (typeof window.getSelection != "undefined") {
+            range = window.getSelection().getRangeAt(0);
+            priorRange = range.cloneRange();
+            priorRange.selectNodeContents(element);
+            priorRange.setEnd(range.startContainer, range.startOffset);
+            start = priorRange.toString().length;
+            end = start + range.toString().length;
+        }
+        else if (typeof document.selection != "undefined" && (sel = document.selection).type != "Control") {
+            range = sel.createRange();
+            priorRange = document.body.createTextRange();
+            priorRange.moveToElementText(element);
+            priorRange.setEndPoint("EndToStart", range);
+            start = priorRange.text.length - 1;
+            end = start + range.text.length;
+        }
+        document.annotateCharForm.startSelectedTextChar.value = start.toString();
+        document.annotateCharForm.endSelectedTextChar.value = end.toString();
+    }
+</script>
+<script>
+    // Function to save everything to table
+    function save() {
+
+        var items = document.getElementsByName("saveInfo");
+        var id = items[0].value;
+        var annotate = items[1].value;
+        var comment = items[2].value;
+        var start = items[3].value;
+        var end = items[4].value;
+
+        var dropDownitems = document.getElementsByName("dropDowns");
+        var docClassID = dropDownitems[0].value;
+        var entityClassID = dropDownitems[1].value;
+        var textClassID = dropDownitems[2].value;
+
+        if (annotate != "" && (entityClassID != "null" || textClassID != "null")) {
+            $.ajax({
+                type: "POST",
+                url: "/Home/SaveAnnotations",
+                data: { sText: annotate.toString(), id: id.toString(), commentText: comment, docClassID: docClassID, entityClassID: entityClassID, textClassID: textClassID, start: start, end: end },
+                success: function () {
+                    alert("Annotation has been saved.");
+                    //then reload the page.
+                    var items = document.getElementsByName("saveInfo");
+                    //annotate box
+                    items[1].value = "";
+                    //comment box
+                    items[2].value = "";
+                    //hidden start char box
+                    items[3].value = "";
+                    //hidden end char box
+                    items[4].value = "";
+                    //text and entity classification dropdowns
+                    var dropDownDivs = document.getElementsByName("dropDownDivs");
+                    var dropDowns = document.getElementsByName("dropDowns");
+                    var entityType = dropDownDivs[0];
+                    var textType = dropDownDivs[1];
+                    var entity = dropDowns[1];
+                    var text = dropDowns[2];
+                    entity.selectedIndex = 0;
+                    text.selectedIndex = 0;
+                    entityType.style.display = "none";
+                    textType.style.display = "none";
+                    if (entityType.style.display === "block") {
+
+                        document.getElementById("btn1").disabled = true;
+                    }
+                    else if (entityType.style.display === "none") {
+
+                        document.getElementById("btn1").disabled = false;
+                    }
+                    if (textType.style.display === "block") {
+
+                        document.getElementById("btn2").disabled = true;
+                    }
+                    else if (textType.style.display === "none") {
+
+                        document.getElementById("btn2").disabled = false;
+                    }
+                }
+            });
+        } else if (entityClassID == "null" && textClassID == "null") {
+            alert("Must have a text or entity classification to be saved.");
+        }
+        else if (annotate == "") {
+            alert("Must have an annotation to be saved.");
+        }
+        else {
+            alert("Make sure all fields are complete.");
+        }
+        
+    }
+</script>
+<script>
+    //Functions to highlight all previous annotations
+    function getTextNodesIn(node) {
+    var textNodes = [];
+    if (node.nodeType == 3) {
+        textNodes.push(node);
+    } else {
+        var children = node.childNodes;
+        for (var i = 0, len = children.length; i < len; ++i) {
+            textNodes.push.apply(textNodes, getTextNodesIn(children[i]));
+        }
+    }
+    return textNodes;
+}
+
+    function setSelectionRange(el, start, end) {
+            if (document.createRange && window.getSelection) {
+                var range = document.createRange();
+                range.selectNodeContents(el);
+                var textNodes = getTextNodesIn(el);
+                var foundStart = false;
+                var charCount = 0, endCharCount;
+
+                for (var i = 0, textNode; textNode = textNodes[i++];) {
+                    endCharCount = charCount + textNode.length;
+                    if (!foundStart && start >= charCount && (start < endCharCount || (start == endCharCount && i <= textNodes.length))) {
+                        range.setStart(textNode, start - charCount);
+                        foundStart = true;
+                    }
+                    if (foundStart && end <= endCharCount) {
+                        range.setEnd(textNode, end - charCount);
+                        break;
+                    }
+                    charCount = endCharCount;
+                }
+
+                var sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (document.selection && document.body.createTextRange) {
+                var textRange = document.body.createTextRange();
+                textRange.moveToElementText(el);
+                textRange.collapse(true);
+                textRange.moveEnd("character", end);
+                textRange.moveStart("character", start);
+                textRange.select();
+            }
+        
+}
+
+function makeEditableAndHighlightText(colour, annotation) {
+    var sel = window.getSelection();
+    if (sel.rangeCount && sel.getRangeAt) {
+        var range = sel.getRangeAt(0);
+    }
+    document.designMode = "on";
+    if (range) {
+        sel.removeAllRanges();
+        sel.addRange(range);
+    }
+
+    var id = annotation.annotationID;
+
+    // Use HiliteColor since some browsers apply BackColor to the whole block
+    if (!document.execCommand("HiliteColor", false, colour)) {
+        document.execCommand("BackColor", false, colour);
+        document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+        $('#classification-loading-indicator').hide();
+    } else {
+        var link = document.createElement("a");
+        link.innerHTML = 
+        document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+        $('#classification-loading-indicator').hide();
+        document.designMode = "off";
+    }
+
+    }
+
+    function makeEditableAndHighlightEntity(colour, annotation) {
+        var sel = window.getSelection();
+        if (sel.rangeCount && sel.getRangeAt) {
+            var range = sel.getRangeAt(0);
+        }
+        document.designMode = "on";
+        if (range) {
+            sel.removeAllRanges();
+            sel.addRange(range);
+        }
+
+        var id = annotation.annotationID;
+
+        // Use HiliteColor since some browsers apply BackColor to the whole block
+        if (!document.execCommand("HiliteColor", false, colour)) {
+            document.execCommand("BackColor", false, colour);
+            document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            $('#classification-loading-indicator').hide();
+        } else {
+            document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            $('#classification-loading-indicator').hide();
+            document.designMode = "off";
+        }
+
+    }
+
+function highlightText(colour, annotation) {
+    var range, sel;
+    if (window.getSelection) {
+        // IE9 and non-IE
+        try {
+            if (!document.execCommand("BackColor", false, colour)) {
+                makeEditableAndHighlightText(colour, annotation);
+            }
+        } catch (ex) {
+            makeEditableAndHighlightText(colour, annotation)
+        }
+    } else if (document.selection && document.selection.createRange) {
+        // IE <= 8 case
+        range = document.selection.createRange();
+        range.execCommand("BackColor", false, colour);
+        var id = annotation.annotationID;
+        range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+        $('#classification-loading-indicator').hide();
+    } else {
+            var id = annotation.annotationID;
+            range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            $('#classification-loading-indicator').hide();
+    }
+    }
+
+    function highlightEntity(colour, annotation) {
+        var range, sel;
+        var id = annotation.annotationID;
+        if (window.getSelection) {
+            // IE9 and non-IE
+            try {
+                if (!document.execCommand("BackColor", false, colour)) {
+                    makeEditableAndHighlightEntity(colour, annotation);
+                }
+            } catch (ex) {
+                makeEditableAndHighlightEntity(colour, annotation)
+            }
+        } else if (document.selection && document.selection.createRange) {
+            // IE <= 8 case
+            range = document.selection.createRange();
+            range.execCommand("BackColor", false, colour);
+            range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            $('#classification-loading-indicator').hide();
+        }
+        else {
+            range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            $('#classification-loading-indicator').hide();
+        }
+    }
+
+        function callPV(id) {
+        $.ajax({
+            type: "POST",
+            url: "/Home/PartialView",
+            data: { id: id  },
+            success: function (data) {
+                var annID = data.annotation.annotationID;
+                var text = data.annotation.highlightedText;
+                var comments = data.comments;
+                var classification = data.classification;
+                var popup = document.getElementById("myPopup");
+                popup.innerHTML = "<br /><div style='text-align: center;'><strong><u>DETAILS</u></strong></div>" + "<p><br /><strong>ID:</strong> " + annID + "<br />"
+                    + "<strong>Annotation:</strong> " + text + "<br />"
+                    + "<strong>Annotation Comment:</strong> " + comments + "<br />"
+                    + "<strong>Classification:</strong> " + classification + "</p>" + "<div style='text-align: center;'>" + "<button id='accept-btn' onclick='thumbsUp()' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
+                             +   "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>"
+                            + "<button id='deny-btn' onclick='thumbsDown()' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
+                    + "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button></div>";
+                popup.classList.toggle("show");
+            }
+        });
+    }
+
+    function textRange(startChars, endChars, annotations) {
+        
+        for (var i = 0; i < startChars.length; i++) {
+            selectTextRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
+        }
+    }
+
+    function entityRange(startChars, endChars, annotations) {
+
+        for (var i = 0; i < startChars.length; i++) {
+            selectEntityRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
+        }
+    }
+
+    function selectTextRange(id, start, end, annotation) {
+            setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
+        highlightText("yellow", annotation);
+    }
+
+    function selectEntityRange(id, start, end, annotation) {
+        setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
+        highlightEntity("chartreuse", annotation);
+    }
+
+</script>
+<script>
+	function togglediv1() {
+        var div = document.getElementById("item1");
+        var dropDown = document.getElementById("textType");
+        dropDown.selectedIndex = 0;
+		div.style.display = div.style.display == "none" ? "block" : "none";
+
+		if (div.style.display === "block") {
+
+			document.getElementById("btn2").disabled = true;
+		}
+		else if (div.style.display === "none") {
+
+			document.getElementById("btn2").disabled = false;
 		}
 
-		function setSelectionRange(el, start, end) {
-			if (document.createRange && window.getSelection) {
-				var range = document.createRange();
-				range.selectNodeContents(el);
-				var textNodes = getTextNodesIn(el);
-				var foundStart = false;
-				var charCount = 0, endCharCount;
 
-				for (var i = 0, textNode; textNode = textNodes[i++];) {
-					endCharCount = charCount + textNode.length;
-					if (!foundStart && start >= charCount && (start < endCharCount || (start == endCharCount && i <= textNodes.length))) {
-						range.setStart(textNode, start - charCount);
-						foundStart = true;
-					}
-					if (foundStart && end <= endCharCount) {
-						range.setEnd(textNode, end - charCount);
-						break;
-					}
-					charCount = endCharCount;
-				}
 
-				var sel = window.getSelection();
-				sel.removeAllRanges();
-				sel.addRange(range);
-			} else if (document.selection && document.body.createTextRange) {
-				var textRange = document.body.createTextRange();
-				textRange.moveToElementText(el);
-				textRange.collapse(true);
-				textRange.moveEnd("character", end);
-				textRange.moveStart("character", start);
-				textRange.select();
-			}
+	}
 
+	function togglediv2() {
+        var div = document.getElementById("item2");
+        var dropDown = document.getElementById("entityType");
+        dropDown.selectedIndex = 0;
+		div.style.display = div.style.display == "none" ? "block" : "none";
+
+		if (div.style.display === "block") {
+
+			document.getElementById("btn1").disabled = true;
 		}
-
-		function makeEditableAndHighlightText(colour, annotation) {
-			var sel = window.getSelection();
-			if (sel.rangeCount && sel.getRangeAt) {
-				var range = sel.getRangeAt(0);
-			}
-			document.designMode = "on";
-			if (range) {
-				sel.removeAllRanges();
-				sel.addRange(range);
-			}
-
-			var id = annotation.annotationID;
-
-			// Use HiliteColor since some browsers apply BackColor to the whole block
-			if (!document.execCommand("HiliteColor", false, colour)) {
-				document.execCommand("BackColor", false, colour);
-				document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-			} else {
-				var link = document.createElement("a");
-				link.innerHTML =
-					document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-				document.designMode = "off";
-			}
-
+		else if (div.style.display === "none") {
+			document.getElementById("btn1").disabled = false;
 		}
+    }
 
-		function makeEditableAndHighlightEntity(colour, annotation) {
-			var sel = window.getSelection();
-			if (sel.rangeCount && sel.getRangeAt) {
-				var range = sel.getRangeAt(0);
-			}
-			document.designMode = "on";
-			if (range) {
-				sel.removeAllRanges();
-				sel.addRange(range);
-			}
-
-			var id = annotation.annotationID;
-
-			// Use HiliteColor since some browsers apply BackColor to the whole block
-			if (!document.execCommand("HiliteColor", false, colour)) {
-				document.execCommand("BackColor", false, colour);
-				document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-			} else {
-				document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-				document.designMode = "off";
-			}
-
-		}
-
-		function highlightText(colour, annotation) {
-			var range, sel;
-			if (window.getSelection) {
-				// IE9 and non-IE
-				try {
-					if (!document.execCommand("BackColor", false, colour)) {
-						makeEditableAndHighlightText(colour, annotation);
-					}
-				} catch (ex) {
-					makeEditableAndHighlightText(colour, annotation)
-				}
-			} else if (document.selection && document.selection.createRange) {
-				// IE <= 8 case
-				range = document.selection.createRange();
-				range.execCommand("BackColor", false, colour);
-				var id = annotation.annotationID;
-				range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-			} else {
-				var id = annotation.annotationID;
-				range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-			}
-		}
-
-		function highlightEntity(colour, annotation) {
-			var range, sel;
-			var id = annotation.annotationID;
-			if (window.getSelection) {
-				// IE9 and non-IE
-				try {
-					if (!document.execCommand("BackColor", false, colour)) {
-						makeEditableAndHighlightEntity(colour, annotation);
-					}
-				} catch (ex) {
-					makeEditableAndHighlightEntity(colour, annotation)
-				}
-			} else if (document.selection && document.selection.createRange) {
-				// IE <= 8 case
-				range = document.selection.createRange();
-				range.execCommand("BackColor", false, colour);
-				range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-			}
-			else {
-				range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-			}
-		}
-
-		function callPV(id) {
-			$.ajax({
-				type: "POST",
-				url: "/Home/PartialView",
-				data: { id: id },
-				success: function (data) {
-					var annID = data.annotation.annotationID;
-					var text = data.annotation.highlightedText;
-					var comments = data.comments;
-					var classification = data.classification;
-					var deny = data.annotation.deny;
-					var accept = data.annotation.accept;
-					var popup = document.getElementById("myPopup");
-					popup.innerHTML = "<br /><div style='text-align: center;'><strong><u>DETAILS</u></strong></div>" + "<p><br /><strong>ID:</strong> " + annID + "<br />"
-						+ "<strong>Annotation:</strong> " + text + "<br />"
-						+ "<strong>Annotation Comment:</strong> " + comments + "<br />"
-						+ "<strong>Classification:</strong> " + classification + "</p>"
-						+ "<div style='text-align: center;'>" + "<button id='accept-btn'  value = 'likes' onclick='thumbsUp(" + '"' + annID + '"' + ", " + '"' + accept + '"' + ")' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
-						+ "<span class='glyphicon glyphicon-thumbs-up'> Accept </span></button>" 
-						+ "<span id = 'likeCount'>" + accept + " </span>"
-						+ "<button id='deny-btn' onclick='thumbsDown(" + '"' + annID + '"' + ", " + '"' + deny + '"' + ")' style='background-color:  #0078d7; border: 1px solid transparent; color: white;  margin: 15px; font-size: 13px;'>"
-						+ "<span class='glyphicon glyphicon-thumbs-down'> Deny </span></button>"
-						+ "<span id = 'denyCount'>" + deny + " </span></div>";
-					popup.classList.toggle("show");
-				}
-			});
-		}
-
-		function textRange(startChars, endChars, annotations) {
-
-			for (var i = 0; i < startChars.length; i++) {
-				selectTextRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
-			}
-		}
-
-		function entityRange(startChars, endChars, annotations) {
-
-			for (var i = 0; i < startChars.length; i++) {
-				selectEntityRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
-			}
-		}
-
-		function selectTextRange(id, start, end, annotation) {
-			setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
-			highlightText("yellow", annotation);
-		}
-
-		function selectEntityRange(id, start, end, annotation) {
-			setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
-			highlightEntity("chartreuse", annotation);
-		}
-
-	</script>
-	<script>
-		function togglediv1() {
-			var div = document.getElementById("item1");
-			var dropDown = document.getElementById("textType");
-			dropDown.selectedIndex = 0;
-			div.style.display = div.style.display == "none" ? "block" : "none";
-
-			if (div.style.display === "block") {
-
-				document.getElementById("btn2").disabled = true;
-			}
-			else if (div.style.display === "none") {
-
-				document.getElementById("btn2").disabled = false;
-			}
+    
+</script>
 
 
-
-		}
-
-		function togglediv2() {
-			var div = document.getElementById("item2");
-			var dropDown = document.getElementById("entityType");
-			dropDown.selectedIndex = 0;
-			div.style.display = div.style.display == "none" ? "block" : "none";
-
-			if (div.style.display === "block") {
-
-				document.getElementById("btn1").disabled = true;
-			}
-			else if (div.style.display === "none") {
-				document.getElementById("btn1").disabled = false;
-			}
-		}
-
-
-	</script>
-
-	<script>
-		function docClassDisplay(classID, docClassification) {
-			var list = document.getElementById("option");
-			list.value = classID;
-			list.innerHTML = docClassification;
-		}
-
-	
-
-		function thumbsUp(annID, accept)
-		{
-			let likes = accept;
-			likes++;
-			var id = annID;
-
-			$.ajax({
-				type: "POST",
-				url: "/Home/SaveAcceptValue",
-				data: { id: id, likes: likes },
-				success: function () {
-					callPV(id);
-				}
-			});
-
-		}
-	
-		
-
-		function thumbsDown(annID, deny) {
-
-			let dislikes = deny;
-			dislikes++;
-			var id = annID;
-
-			$.ajax({
-				type: "POST",
-				url: "/Home/SaveDenyValue",
-				data: { id: id, dislikes: dislikes },
-				success: function () {
-					callPV(id);
-				}
-			});
-
-		}
-		
-	</script>
-
-
-
-
-
-	
+<script>
+    function docClassDisplay(classID, docClassification) {
+        var list = document.getElementById("option");
+        list.value = classID;
+        list.innerHTML = docClassification;
+    }
+</script>
