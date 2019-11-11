@@ -737,5 +737,10 @@ namespace CognitiveSearch.UI.Controllers
                 return new JsonResult(new DocumentResult { classID = classID, docClassification = docClassification });
             
         }
+
+        public IActionResult addClass() 
+        {
+            return View();
+        }
     }
 }

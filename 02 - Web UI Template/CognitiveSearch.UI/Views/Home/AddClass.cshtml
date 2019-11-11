@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "AddClass";
+}
+
+<h2>Create New Classification</h2>
+
+<!DOCTYPE html>
+<html>
+
+    <body>
+    </body>
+
+    <div class="log"></div>
+    <div style="text-align: center;">
+        <form class="col-md-pull-6" id="EntityForm" name="DocForm" style="display:inline;">
+            <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="31" style="resize:none; text-align:center;"></textarea>
+        </form>
+        <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addClass()">Add Document Class</button>
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <form class="col-md-pull-6" id="TextForm" name="TextForm" style="display:inline;">
+            <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center;"></textarea>
+        </form>
+        <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addClass()">Add Text Class</button>
+    </div>
+    <br>
+    <div style="text-align: center;">
+        <form class="col-md-pull-6" id="EntityForm" name="EntityForm" style="display:inline;">
+            <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="35" style="resize:none; text-align:center;"></textarea>
+        </form>
+        <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addClass()">Add Entity Class</button>
+    </div>
+    <br>
+ 
+      <br>
+     <br>
+    <div style="text-align: center;">
+         <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="homePage()">Back</button>
+ </div>
+
+</html>
