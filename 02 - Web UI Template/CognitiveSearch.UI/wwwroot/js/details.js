@@ -237,3 +237,14 @@ function SearchTranscript(searchText) {
     }
 }
 
+
+
+
+	
+	
+	
+
+
+
+
+
