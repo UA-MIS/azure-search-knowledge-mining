@@ -687,13 +687,14 @@ namespace CognitiveSearch.UI.Controllers
         {
             string docClassification = "";
             string classID = "";
-         
-                // connect to storage account
-                CloudStorageAccount storageAccount = new CloudStorageAccount(
-                new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
-                "mbdmisstorage", "vM3gjO1z1qp2xj0GubaCiswvwklpb9HvodnH14hTXZAvtyRyKiLG540PO9ahG/X0UfU0MdElepH0p52I2JRdzQ=="), true);
 
-                CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            // connect to storage account
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
                 CloudTable Documents = tableClient.GetTableReference("Documents");
                 TableOperation retrieveOperation4 = TableOperation.Retrieve<Document>(id, id + "_Doc");
