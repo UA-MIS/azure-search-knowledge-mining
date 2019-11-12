@@ -798,6 +798,54 @@ namespace CognitiveSearch.UI.Controllers
 					TableOperation insertOperation3 = TableOperation.Replace(annotation);
 					await Annotations.ExecuteAsync(insertOperation3);
 				}
+				else
+				{
+					//insert into soft delete tables comment and annotation
+					//Soft Delete Tables
+					CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
+					CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
+					Comment c = new Comment();
+					//insert annotation into deleted annotation
+					TableOperation insertOperation = TableOperation.Insert(annotation);
+					await DeletedAnnotations.ExecuteAsync(insertOperation);
+
+
+
+					//Comments (annotation from above)
+					var allComments = new List<Comment>();
+					CloudTable Comments = tableClient.GetTableReference("Comments");
+					//TableOperation retrieveOperation5 = TableOperation.Retrieve<Comment>(pKey, rKey);
+					TableContinuationToken token1 = null;
+					//get all comments
+					do
+					{
+						var x1 = new TableQuery<Comment>();
+						var queryResult1 = Task.Run(() => Comments.ExecuteQuerySegmentedAsync(x1, token1)).GetAwaiter().GetResult();
+						foreach (var item in queryResult1.Results)
+						{
+							allComments.Add(item);
+						}
+						token1 = queryResult1.ContinuationToken;
+					} while (token1 != null);
+					//get all comments for specific annotatin
+					foreach (var comment in allComments)
+					{
+						if (comment.AnnotationID == annotation.AnnotationID)
+						{
+							c = comment;
+							TableOperation insertOperation2 = TableOperation.Insert(comment);
+							async void AddDeletedComment()
+							{
+								await DeletedComments.ExecuteAsync(insertOperation2);
+							}
+							AddDeletedComment();
+
+						}
+
+					}
+
+				}
+
 			}
 			return Json("Accept has been saved.");
 		}
