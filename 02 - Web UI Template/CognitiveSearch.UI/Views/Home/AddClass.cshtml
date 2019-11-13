@@ -3,14 +3,12 @@
     ViewData["Title"] = "AddClass";
 }
 
-<h2>Create New Classification</h2>
-
 <!DOCTYPE html>
 <html>
 
-<body>
-</body>
-
+<h2 style="text-align: center; margin-top: 150px;">Create New Classification</h2>
+<br>
+<br>
 <div class="log"></div>
 <div style="text-align: center;">
     <form class="col-md-pull-6" id="EntityForm" name="DocForm" style="display:inline;">
@@ -39,54 +37,66 @@
 <div style="text-align: center;">
     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent; font-size: 13px;"> @Html.ActionLink("Home", "Index", "Home", null, new { style = "color: white" })</button>
 
-   
+
 </div>
 
 </html>
 <script>
     function addDocClass() {
 
-        var list = document.getElementById("selectedtext1").value;
-      
-        $.ajax({
+        var text = document.getElementById("selectedtext1").value;
+        if (text != "") {
+             $.ajax({
             type: "POST",
-            url: "/Home/AddClass", //make this the name of the backend method
-            data: { list : list },
+            url: "/Home/SaveDocClass", //make this the name of the backend method
+            data: { text: text },
             success: function () {
-                
+                location.reload();
             }
         });
+        } else {
+            alert("Please enter some text");
+        }
+       
     }
 </script>
 
 <script>
-     function addTextClass() {
+    function addTextClass() {
 
-        var list = document.getElementById("selectedtext2").value;
+        var text = document.getElementById("selectedtext2").value;
 
-        $.ajax({
+        if (text != "") {
+             $.ajax({
             type: "POST",
-            url: "/Home/AddClass", //make this the name of the backend method
-            data: { list : list },
+            url: "/Home/SaveTextClass", //make this the name of the backend method
+            data: { text: text },
             success: function () {
-                
+                location.reload();
             }
         });
+        } else {
+            alert("Please enter some text");
+        }
     }
-    </script>
+</script>
 
 <script>
-     function addEntityClass() {
+    function addEntityClass() {
 
         var text = document.getElementById("selectedtext3").value;
 
-        $.ajax({
+        if (text != "") {
+             $.ajax({
             type: "POST",
             url: "/Home/SaveEntityClass", //make this the name of the backend method
-            data: { text : text },
+            data: { text: text },
             success: function () {
-                
+                location.reload();
             }
         });
+        } else {
+            alert("Please enter some text");
+        }
     }
-    </script>
+</script>

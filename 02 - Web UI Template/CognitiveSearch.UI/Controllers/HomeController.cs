@@ -977,8 +977,89 @@ namespace CognitiveSearch.UI.Controllers
 
 			}
 			createEntity();
-			return RedirectToAction("Index");
+			return RedirectToAction("AddClass");
 		}
 
-	}
+        public IActionResult SaveDocClass(string text)
+        {
+            string classification = text;
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTable Docclassification = tableClient.GetTableReference("DocClassifications");
+
+            int classificationCounter = 1;
+
+            async void createDocClass()
+            {
+                //retrieves doc class where partitionKey = counter in table
+                TableOperation retrieveOperation = TableOperation.Retrieve<DocClassification>(classificationCounter.ToString(), "DC" + classificationCounter.ToString());
+                TableResult query = await Docclassification.ExecuteAsync(retrieveOperation);
+
+                //if doc class exists add to counter
+                while (query.Result != null)
+                {
+                    classificationCounter++;
+                    retrieveOperation = TableOperation.Retrieve<DocClassification>(classificationCounter.ToString(), "DC" + classificationCounter.ToString());
+
+                    query = await Docclassification.ExecuteAsync(retrieveOperation);
+                }
+
+                // Create an DOC CLASS and add it to the table.
+                DocClassification DocClassification = new DocClassification(classificationCounter.ToString(), classificationCounter.ToString());
+                DocClassification.DocClassID = "DC" + classificationCounter.ToString();
+                DocClassification.Classification = classification;
+
+                TableOperation insertOperation = TableOperation.Insert(DocClassification);
+                await Docclassification.ExecuteAsync(insertOperation);
+
+            }
+            createDocClass();
+            return RedirectToAction("AddClass");
+        }
+
+        public IActionResult SaveTextClass(string text)
+        {
+            string classification = text;
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTable Textclassification = tableClient.GetTableReference("TextClassifications");
+
+            int classificationCounter = 1;
+
+            async void createTextClass()
+            {
+                //retrieves text class where partitionKey = counter in table
+                TableOperation retrieveOperation = TableOperation.Retrieve<TextClassification>(classificationCounter.ToString(), "TC" + classificationCounter.ToString());
+                TableResult query = await Textclassification.ExecuteAsync(retrieveOperation);
+
+                //if text class exists add to counter
+                while (query.Result != null)
+                {
+                    classificationCounter++;
+                    retrieveOperation = TableOperation.Retrieve<TextClassification>(classificationCounter.ToString(), "TC" + classificationCounter.ToString());
+
+                    query = await Textclassification.ExecuteAsync(retrieveOperation);
+                }
+
+                // Create an TEXT CLASS and add it to the table.
+                TextClassification TextClassification = new TextClassification(classificationCounter.ToString(), classificationCounter.ToString());
+                TextClassification.TextClassID = "TC" + classificationCounter.ToString();
+                TextClassification.Classification = classification;
+
+                TableOperation insertOperation = TableOperation.Insert(TextClassification);
+                await Textclassification.ExecuteAsync(insertOperation);
+
+            }
+            createTextClass();
+            return RedirectToAction("AddClass");
+        }
+    }
 }
