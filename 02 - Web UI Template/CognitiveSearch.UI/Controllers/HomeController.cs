@@ -937,5 +937,48 @@ namespace CognitiveSearch.UI.Controllers
                 count++;
             }
         }
-    }
+
+
+		public IActionResult SaveEntityClass(string text)
+		{
+			string classification = text;
+			string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+			string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+			CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+			accountName, accountKey), true);
+
+			CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+			CloudTable Entityclassification = tableClient.GetTableReference("EntityClassifications");
+			
+			int classificationCounter = 1;
+
+			async void createEntity()
+			{
+				//retrieves annotation entity where partitionKey = counter in table
+				TableOperation retrieveOperation = TableOperation.Retrieve<EntityClassification>(classificationCounter.ToString(), "EC" + classificationCounter.ToString());
+				TableResult query = await Entityclassification.ExecuteAsync(retrieveOperation);
+
+				//if entity annotation exists add to counter
+				while (query.Result != null)
+				{
+					classificationCounter++;
+					retrieveOperation = TableOperation.Retrieve<EntityClassification>(classificationCounter.ToString(), "EC" + classificationCounter.ToString());
+
+					query = await Entityclassification.ExecuteAsync(retrieveOperation);
+				}
+
+				// Create an annotation entity and add it to the table.
+				EntityClassification EntityClassification = new EntityClassification(classificationCounter.ToString(), classificationCounter.ToString());
+				EntityClassification.EntityClassID = "EC" + classificationCounter.ToString();
+				EntityClassification.Classification = classification;
+
+				TableOperation insertOperation = TableOperation.Insert(EntityClassification);
+				await Entityclassification.ExecuteAsync(insertOperation);
+
+			}
+			createEntity();
+			return RedirectToAction("Index");
+		}
+
+	}
 }

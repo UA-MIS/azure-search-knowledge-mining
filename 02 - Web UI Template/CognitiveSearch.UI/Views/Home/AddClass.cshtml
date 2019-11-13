@@ -78,12 +78,12 @@
 <script>
      function addEntityClass() {
 
-        var list = document.getElementById("selectedtext3").value;
+        var text = document.getElementById("selectedtext3").value;
 
         $.ajax({
             type: "POST",
-            url: "/Home/AddClass", //make this the name of the backend method
-            data: { list : list },
+            url: "/Home/SaveEntityClass", //make this the name of the backend method
+            data: { text : text },
             success: function () {
                 
             }
