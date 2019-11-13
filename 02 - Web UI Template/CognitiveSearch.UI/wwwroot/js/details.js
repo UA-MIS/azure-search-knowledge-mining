@@ -32,7 +32,13 @@ function getTextAnnotations() {
             startChars = data.textStartChars;
             endChars = data.textEndChars;
             annotations = data.textAnnotations;
-            textRange(startChars, endChars, annotations);
+            if (annotations.length != 0) {
+                textRange(startChars, endChars, annotations);
+            }
+            else {
+                $('#classification-loading-indicator').hide();
+                alert("There are no text classification annotations.");
+            }
         }
     });
 }
@@ -49,7 +55,13 @@ function getEntityAnnotations() {
             startChars = data.entityStartChars;
             endChars = data.entityEndChars;
             annotations = data.entityAnnotations;
-            entityRange(startChars, endChars, annotations);
+            if (annotations.length != 0) {
+                entityRange(startChars, endChars, annotations);
+            }
+            else {
+                $('#classification-loading-indicator').hide();
+                alert("There are no text classification annotations.");
+            }
         }
     });
 }
