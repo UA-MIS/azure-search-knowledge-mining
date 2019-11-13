@@ -741,6 +741,11 @@ namespace CognitiveSearch.UI.Controllers
 
         }
 
+        public IActionResult addClass()
+        {
+            return View();
+        }
+
         public IActionResult SaveAcceptValue(string id, int likes)
         {
             string pKey = id.Trim('A');
