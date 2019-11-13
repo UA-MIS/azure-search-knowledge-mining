@@ -771,12 +771,12 @@ namespace CognitiveSearch.UI.Controllers
 
 		}
 
-        public IActionResult addClass()
-        {
-            return View();
-        }
+		public IActionResult addClass()
+		{
+			return View();
+		}
 
-        public IActionResult SaveDenyValue(string id, int dislikes)
+		public IActionResult SaveDenyValue(string id, int dislikes)
 		{
 			string pKey = id.Trim('A');
 			string rKey = id;
@@ -852,5 +852,8 @@ namespace CognitiveSearch.UI.Controllers
 			}
 			return Json("Accept has been saved.");
 		}
+
+		
+
 	}
 }
