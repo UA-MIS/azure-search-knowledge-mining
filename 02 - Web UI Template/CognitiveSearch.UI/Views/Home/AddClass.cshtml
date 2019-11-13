@@ -3,38 +3,34 @@
     ViewData["Title"] = "AddClass";
 }
 
-
-
+<h2>Create New Classification</h2>
 
 <!DOCTYPE html>
 <html>
 
+<body>
+</body>
 
-<td style="vertical-align: middle; ">
-    <h2 style="text-align: center; margin-top: 150px;">Create New Classification</h2>
-</td>
-<br>
-<br>
 <div class="log"></div>
 <div style="text-align: center;">
     <form class="col-md-pull-6" id="EntityForm" name="DocForm" style="display:inline;">
-        <textarea id="selectedtext1" name="saveInfo" rows="1" cols="31" style="resize:none;  text-align:left;"></textarea>
+        <textarea id="selectedtext1" name="saveInfo" rows="1" cols="31" style="resize:none; text-align:left;"></textarea>
     </form>
-    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addDocClass()">Add Document Class</button>
+    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addDocClass()">Add Document Class</button>
 </div>
 <br>
-<div style="text-align: center;  ">
+<div style="text-align: center;">
     <form class="col-md-pull-6" id="TextForm" name="TextForm" style="display:inline;">
         <textarea id="selectedtext2" name="saveInfo" rows="1" cols="37" style="resize:none; text-align:left;"></textarea>
     </form>
-    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addTextClass()">Add Text Class</button>
+    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addTextClass()">Add Text Class</button>
 </div>
 <br>
-<div style="text-align: center;  ">
+<div style="text-align: center;">
     <form class="col-md-pull-6" id="EntityForm" name="EntityForm" style="display:inline;">
         <textarea id="selectedtext3" name="saveInfo" rows="1" cols="35" style="resize:none; text-align:left;"></textarea>
     </form>
-    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addEntityClass()">Add Entity Class</button>
+    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addEntityClass()">Add Entity Class</button>
 </div>
 <br>
 
@@ -42,6 +38,8 @@
 <br>
 <div style="text-align: center;">
     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent; font-size: 13px;"> @Html.ActionLink("Home", "Index", "Home", null, new { style = "color: white" })</button>
+
+   
 </div>
 
 </html>
@@ -49,48 +47,46 @@
     function addDocClass() {
 
         var list = document.getElementById("selectedtext1").value;
-
+      
         $.ajax({
             type: "POST",
             url: "/Home/AddClass", //make this the name of the backend method
-            data: { list: list },
+            data: { list : list },
             success: function () {
-
+                
             }
         });
     }
 </script>
 
 <script>
-    function addTextClass() {
+     function addTextClass() {
 
         var list = document.getElementById("selectedtext2").value;
 
         $.ajax({
             type: "POST",
             url: "/Home/AddClass", //make this the name of the backend method
-            data: { list: list },
+            data: { list : list },
             success: function () {
-
+                
             }
         });
     }
-</script>
+    </script>
 
 <script>
-    function addEntityClass() {
+     function addEntityClass() {
 
-        var list = document.getElementById("selectedtext3").value;
+        var text = document.getElementById("selectedtext3").value;
 
         $.ajax({
             type: "POST",
-            url: "/Home/AddClass", //make this the name of the backend method
-            data: { list: list },
+            url: "/Home/SaveEntityClass", //make this the name of the backend method
+            data: { text : text },
             success: function () {
-
+                
             }
         });
     }
-</script>
-
-
+    </script>
