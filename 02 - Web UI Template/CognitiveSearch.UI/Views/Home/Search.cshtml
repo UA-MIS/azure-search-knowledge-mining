@@ -369,7 +369,6 @@
 
         // Use HiliteColor since some browsers apply BackColor to the whole block
         if (!document.execCommand("HiliteColor", false, colour)) {
-            //document.execCommand("BackColor", false, colour);
             document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         } else {

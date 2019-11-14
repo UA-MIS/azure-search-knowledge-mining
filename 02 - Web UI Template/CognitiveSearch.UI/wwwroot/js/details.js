@@ -60,7 +60,7 @@ function getEntityAnnotations() {
             }
             else {
                 $('#classification-loading-indicator').hide();
-                alert("There are no text classification annotations.");
+                alert("There are no entity classification annotations.");
             }
         }
     });
