@@ -170,6 +170,8 @@ function loading() {
 function refreshTranscript() {
     var transcriptContainerHTML = htmlDecode(result.content.trim());
     $('#transcript-viewer-pre').html(transcriptContainerHTML);
+    popup = document.getElementById("myPopup");
+    popup.innerHTML = "";
 }
 
 function GetMatches(string, regex, index) {

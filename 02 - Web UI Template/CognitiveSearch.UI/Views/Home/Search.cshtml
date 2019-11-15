@@ -263,6 +263,9 @@
                     items[3].value = "";
                     //hidden end char box
                     items[4].value = "";
+                    //popup
+                    popup = document.getElementById("myPopup");
+                    popup.innerHTML = "";
                     //text and entity classification dropdowns
                     var dropDownDivs = document.getElementsByName("dropDownDivs");
                     var dropDowns = document.getElementsByName("dropDowns");
@@ -372,7 +375,8 @@
             document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         } else {
-                document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            //document.execCommand("BackColor", false, colour);
+            document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText);
             $('#classification-loading-indicator').hide();
             document.designMode = "off";
         }
@@ -394,7 +398,7 @@
 
         // Use HiliteColor since some browsers apply BackColor to the whole block
         if (!document.execCommand("HiliteColor", false, colour)) {
-            document.execCommand("BackColor", false, colour);
+            //document.execCommand("BackColor", false, colour);
             document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         } else {
@@ -419,7 +423,7 @@
         } else if (document.selection && document.selection.createRange) {
             // IE <= 8 case
             range = document.selection.createRange();
-            range.execCommand("BackColor", false, colour);
+            //range.execCommand("BackColor", false, colour);
             var id = annotation.annotationID;
             range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
@@ -445,7 +449,7 @@
         } else if (document.selection && document.selection.createRange) {
             // IE <= 8 case
             range = document.selection.createRange();
-            range.execCommand("BackColor", false, colour);
+            //range.execCommand("BackColor", false, colour);
             range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         }
