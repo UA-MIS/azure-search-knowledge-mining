@@ -6,73 +6,84 @@
 <!DOCTYPE html>
 <html>
 
+@*Header for AddClass Webpage*@
 <h2 style="text-align: center; margin-top: 150px;">Create New Classification</h2>
+
 <br>
 <br>
+
+@*Add Doc Class Button and Text Box*@
 <div class="log"></div>
 <div style="text-align: center;">
-    <form class="col-md-pull-6" id="EntityForm" name="DocForm" style="display:inline;">
+    <form class="col-md-pull-6" id="DocForm" name="DocForm" style="display:inline;">
         <textarea id="selectedtext1" name="saveInfo" rows="1" cols="31" style="resize:none; text-align:left;"></textarea>
     </form>
     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addDocClass()">Add Document Class</button>
 </div>
+
 <br>
+
+@*Add Text Class Button and Text Box*@
 <div style="text-align: center;">
     <form class="col-md-pull-6" id="TextForm" name="TextForm" style="display:inline;">
         <textarea id="selectedtext2" name="saveInfo" rows="1" cols="37" style="resize:none; text-align:left;"></textarea>
     </form>
     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addTextClass()">Add Text Class</button>
 </div>
+
 <br>
+
+@*Add Entity Class Button and Text Box*@
 <div style="text-align: center;">
     <form class="col-md-pull-6" id="EntityForm" name="EntityForm" style="display:inline;">
         <textarea id="selectedtext3" name="saveInfo" rows="1" cols="35" style="resize:none; text-align:left;"></textarea>
     </form>
     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="addEntityClass()">Add Entity Class</button>
 </div>
-<br>
 
 <br>
 <br>
+<br>
+
+@*Home button that redirects to Home Page*@
 <div style="text-align: center;">
     <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent; font-size: 13px;"> @Html.ActionLink("Home", "Index", "Home", null, new { style = "color: white" })</button>
-
-
 </div>
 
 </html>
+
 <script>
     function addDocClass() {
-
         var text = document.getElementById("selectedtext1").value;
+
+        //if null doesnt save to table
         if (text != "") {
              $.ajax({
             type: "POST",
-            url: "/Home/SaveDocClass", //make this the name of the backend method
+            url: "/Home/SaveDocClass", //name of the backend method
             data: { text: text },
             success: function () {
-                location.reload();
+                location.reload(); //reloads page after button click
             }
         });
         } else {
             alert("Please enter some text");
-        }
-       
+        }       
     }
 </script>
 
 <script>
     function addTextClass() {
-
         var text = document.getElementById("selectedtext2").value;
 
+        //if null doesnt save to table
         if (text != "") {
              $.ajax({
             type: "POST",
-            url: "/Home/SaveTextClass", //make this the name of the backend method
+            url: "/Home/SaveTextClass", //name of the backend method
             data: { text: text },
             success: function () {
-                location.reload();
+                location.reload(); //reloads page after button click
             }
         });
         } else {
@@ -83,16 +94,16 @@
 
 <script>
     function addEntityClass() {
-
         var text = document.getElementById("selectedtext3").value;
 
+        //if null doesnt save to table
         if (text != "") {
              $.ajax({
             type: "POST",
-            url: "/Home/SaveEntityClass", //make this the name of the backend method
+            url: "/Home/SaveEntityClass", //name of the backend method
             data: { text: text },
             success: function () {
-                location.reload();
+                location.reload(); //reloads page after button click
             }
         });
         } else {

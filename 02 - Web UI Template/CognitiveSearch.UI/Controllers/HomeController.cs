@@ -389,7 +389,6 @@ namespace CognitiveSearch.UI.Controllers
                     });
                 }
             }
-
             return new JsonResult(new DocumentResult { Results = response.Results, Facets = facetResults, Tags = tagsResults, Count = Convert.ToInt32(response.Count), Token = token, SearchId = searchId });
         }
 
@@ -508,7 +507,6 @@ namespace CognitiveSearch.UI.Controllers
                 eAnnotations[ch] = item;
                 ch++;
             }
-
             return new JsonResult(new DocumentResult { textStartChars = textStartChars, textEndChars = textEndChars, entityStartChars = entityStartChars, entityEndChars = entityEndChars, textAnnotations = tAnnotations, entityAnnotations = eAnnotations });
         }
 
@@ -524,16 +522,13 @@ namespace CognitiveSearch.UI.Controllers
             if (newAnnotation.ClassificationID.StartsWith("T"))
             {
                 TextClassification textClassification = await GetTextClassifications(pKey, rKey);
-                classification = textClassification.Classification;
-                //return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, textClassification = textClassification });
+                classification = textClassification.Classification;               
             }
             else if (newAnnotation.ClassificationID.StartsWith("E"))
             {
                 EntityClassification entityClassification = await GetEntityClassifications(pKey, rKey);
-                classification = entityClassification.Classification;
-                //return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, entityClassification = entityClassification });
+                classification = entityClassification.Classification;             
             }
-
             return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, classification = classification });
         }
 
@@ -594,8 +589,6 @@ namespace CognitiveSearch.UI.Controllers
                     textClassification = item;
                 }
             }
-
-
             return textClassification;
         }
 
@@ -638,7 +631,6 @@ namespace CognitiveSearch.UI.Controllers
                     entityClassification = item;
                 }
             }
-
             return entityClassification;
         }
 
@@ -853,7 +845,7 @@ namespace CognitiveSearch.UI.Controllers
                         token1 = queryResult1.ContinuationToken;
                     } while (token1 != null);
 
-                    //get all comments for specific annotatin
+                    //get all comments for specific annotation
                     foreach (var comment in allComments)
                     {
                         allAnnotationComments.Add(comment);
@@ -919,7 +911,7 @@ namespace CognitiveSearch.UI.Controllers
 
             int count = 0;
 
-            //get all comments for specific annotatin
+            //get all comments for specific annotation
             foreach (var comment in allAnnotationComments)
             {
                 
@@ -939,8 +931,8 @@ namespace CognitiveSearch.UI.Controllers
         }
 
 
-		public IActionResult SaveEntityClass(string text)
-		{
+		public IActionResult SaveEntityClass(string text) //saves NEW Entity Class to Entity Classifications Table
+        {
 			string classification = text;
 			string accountName = _configuration.GetSection("StorageAccountName")?.Value;
 			string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
@@ -980,7 +972,7 @@ namespace CognitiveSearch.UI.Controllers
 			return RedirectToAction("AddClass");
 		}
 
-        public IActionResult SaveDocClass(string text)
+        public IActionResult SaveDocClass(string text) //saves NEW Document Class to Document Classifications Table
         {
             string classification = text;
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
@@ -1021,7 +1013,7 @@ namespace CognitiveSearch.UI.Controllers
             return RedirectToAction("AddClass");
         }
 
-        public IActionResult SaveTextClass(string text)
+        public IActionResult SaveTextClass(string text) //saves NEW Text Class to Text Classifications Table
         {
             string classification = text;
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
