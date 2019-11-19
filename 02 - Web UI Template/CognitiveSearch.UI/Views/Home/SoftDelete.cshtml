@@ -1,0 +1,91 @@
+﻿
+@{
+    ViewData["Title"] = "Soft Delete";
+}
+
+<html>
+<head>
+    <style>
+
+        table {
+            width: 90%;
+        }
+
+        td, th {
+            border: 1px solid;
+            text-align: left;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2 style="text-align: center;">Deleted Annotations</h2>
+    <h4 style="text-align: center;">@ViewBag.text</h4>
+
+
+    @*DeletedAnnotation Table*@
+
+    <table align="center">
+        <tr>
+            <th>
+                AnnotationID
+            </th>
+            <th>
+                ClassificationID
+            </th>
+            <th>
+                HighlightedText
+            </th>
+            <th>
+                Accept
+            </th>
+            <th>
+                Deny
+            </th>
+        </tr>
+
+        @{ int i = 0; }
+
+        @foreach (var item in ViewBag.AnnotationList)
+        {
+            i += 1;
+            <tr>
+
+                <td>
+                    @item.AnnotationID
+                </td>
+                <td>
+                    @item.ClassificationID
+                </td>
+                <td>
+                    @item.HighlightedText
+                </td>
+                <td>
+                    @item.Accept
+                </td>
+                <td>
+                    @item.Deny
+                </td>
+
+            </tr>
+        }
+    </table>
+    <br>
+
+    <br>
+    <br>
+
+    <div style="text-align: center;">
+        <button class="col-md-push-6" style="color: #fff;  padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent; font-size: 13px;"> @Html.ActionLink("Home", "Index", "Home", null, new { style = "color: white" })</button>
+
+
+    </div>
+
+</body>
+
+
+</html>
+
+
+
