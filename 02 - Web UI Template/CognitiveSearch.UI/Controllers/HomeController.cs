@@ -922,7 +922,7 @@ namespace CognitiveSearch.UI.Controllers
             //get all comments for specific annotatin
             foreach (var comment in allAnnotationComments)
             {
-                
+
                 comment.ETag = "*";
                 comment.PartitionKey = commentPKeys[count];
                 comment.RowKey = commentRKeys[count];
@@ -937,5 +937,40 @@ namespace CognitiveSearch.UI.Controllers
                 count++;
             }
         }
+        public async Task<IActionResult> SoftDelete()
+        {
+            //string doc = id;
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
+
+            var allAnnotations = new List<DeletedAnnotation>();
+            // CloudTable Comments = tableClient.GetTableReference("Comments");
+            //TableOperation retrieveOperation5 = TableOperation.Retrieve<Comment>(pKey, rKey);
+            TableContinuationToken token1 = null;
+            do
+            {
+                var x1 = new TableQuery<DeletedAnnotation>();
+                var queryResult1 = Task.Run(() => DeletedAnnotations.ExecuteQuerySegmentedAsync(x1, token1)).GetAwaiter().GetResult();
+                foreach (var item in queryResult1.Results)
+                {
+                    allAnnotations.Add(item);
+                }
+                token1 = queryResult1.ContinuationToken;
+            } while (token1 != null);
+
+            ViewBag.text = "";
+            ViewBag.AnnotationList = allAnnotations.OrderBy(ann => ann.DocumentID);
+            if (allAnnotations.Count <= 0)
+            {
+                ViewBag.text = "There are no deleted annotations";
+            }
+            return View();
+        }
     }
 }
+         
+  

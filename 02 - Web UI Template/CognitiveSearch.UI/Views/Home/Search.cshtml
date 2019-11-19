@@ -50,16 +50,16 @@
                             @*UA MIS ADDED HTML*@
                             @{ <br />
                                 var docClassificationList = ViewBag.docClassList;
-                                        <div style="text-align: center;">
-                                            <select name="dropDowns" id="docType" style="width: 455px">
-                                                <option id="option" value=null selected="selected">Document Classification</option>
-                                                @foreach (var docClass in ViewBag.docClassList)
-                                                {
-                                                    <option value=@docClass.DocClassID>@docClass.Classification</option>
-                                                }
-                                                <option value="test3" href="AddClass">+ Add Classification </option>
-                                            </select>
-                                        </div>
+                                <div style="text-align: center;">
+                                    <select name="dropDowns" id="docType" style="width: 455px">
+                                        <option id="option" value=null selected="selected">Document Classification</option>
+                                        @foreach (var docClass in ViewBag.docClassList)
+                                        {
+                                            <option value=@docClass.DocClassID>@docClass.Classification</option>
+                                        }
+                                        <option value="test3" href="AddClass">+ Add Classification </option>
+                                    </select>
+                                </div>
                                 <br />
                                 <div class="log"></div>
                                 <div style="text-align: center;">
@@ -74,28 +74,28 @@
                                 </div>
 
                                 var entityClassificationList = ViewBag.entityClassList;
-                        <div hidden id="item2" style="text-align: center; display:none">
-                            <select name="dropDowns" id="entityType" style="width: 455px">
-                                <option value=null selected="selected">Entity Classification</option>
-                                @foreach (var entityClass in ViewBag.entityClassList)
-                                {
-                                    <option value=@entityClass.EntityClassID>@entityClass.Classification</option>
-                                }
-                                <option value="test1" href="AddClass">+ Add Classification </option>
-                            </select>
-                        </div>
+                                <div hidden id="item2" style="text-align: center; display:none">
+                                    <select name="dropDowns" id="entityType" style="width: 455px">
+                                        <option value=null selected="selected">Entity Classification</option>
+                                        @foreach (var entityClass in ViewBag.entityClassList)
+                                        {
+                                            <option value=@entityClass.EntityClassID>@entityClass.Classification</option>
+                                        }
+                                        <option value="test1" href="AddClass">+ Add Classification </option>
+                                    </select>
+                                </div>
                                 var textClassificationList = ViewBag.textClassList;
-                        <div hidden id="item1" style="text-align: center; display:none">
-                            <select name="dropDowns" id="textType" style="width: 455px" ;>
-                                <option value=null selected="selected">Text Classification</option>
-                                @foreach (var textClass in ViewBag.textClassList)
-                                {
-                                    <option value=@textClass.TextClassID>@textClass.Classification</option>
-                                }
-                            <option value="test2" href="AddClass">+ Add Classification </option>
-                            </select>
-                        </div>
-                                }
+                                <div hidden id="item1" style="text-align: center; display:none">
+                                    <select name="dropDowns" id="textType" style="width: 455px" ;>
+                                        <option value=null selected="selected">Text Classification</option>
+                                        @foreach (var textClass in ViewBag.textClassList)
+                                        {
+                                            <option value=@textClass.TextClassID>@textClass.Classification</option>
+                                        }
+                                        <option value="test2" href="AddClass">+ Add Classification </option>
+                                    </select>
+                                </div>
+                            }
                             <br />
                             <form style="text-align: center;">
                                 <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;" placeholder="Add a comment to your annotation..."></textarea>
@@ -104,6 +104,7 @@
                             <div style="text-align:center;">
                                 <button style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
                             </div>
+                           
                             <div>
                                 <form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
                                     <textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
@@ -606,10 +607,20 @@
             type: "POST",
             url: "/Home/SaveDenyValue",
             data: { id: id, dislikes: dislikes },
-            success: function () {
-                callPV(id);
+            success: function (data) {
+
+                if (data.result == "") {
+                    callPV(id);
+                } else {
+                    location.href = "/Home/SoftDelete";
+                }
+            
             }
         });
     }
 
 </script>
+
+
+
+
