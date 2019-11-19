@@ -50,70 +50,70 @@
                             @*UA MIS ADDED HTML*@
                             @{ <br />
                                 var docClassificationList = ViewBag.docClassList;
-                                <div style="text-align: center;">
-                                    <select name="dropDowns" id="docType" style="width: 455px">
-                                        <option id="option" value=null selected="selected">Document Classification</option>
-                                        @foreach (var docClass in ViewBag.docClassList)
-                                        {
-                                            <option value=@docClass.DocClassID>@docClass.Classification</option>
-                                        }
-                                        <option value="test3" href="AddClass">+ Add Classification </option>
-                                    </select>
-                                </div>
+                                        <div style="text-align: center;">
+                                            <select name="dropDowns" id="docType" style="width: 75%;">
+                                                <option id="option" value=null selected="selected">Document Classification</option>
+                                                @foreach (var docClass in ViewBag.docClassList)
+                                                {
+                                                    <option value=@docClass.DocClassID>@docClass.Classification</option>
+                                                }
+                                                <option value="test3" href="AddClass">+ Add Classification </option>
+                                            </select>
+                                        </div>
                                 <br />
                                 <div class="log"></div>
                                 <div style="text-align: center;">
-                                    <form class="col-md-pull-6" id="annotateForm" name="annotateForm" style="display:inline;">
-                                        <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center;"></textarea>
+                                    <form id="annotateForm" name="annotateForm" style="display:inline;">
+                                        <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center; width: 50%;"></textarea>
                                     </form>
-                                    <button class="col-md-push-6" style="color: #fff; vertical-align: top; padding-bottom: 5px;  background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
+                                    <button style="color: #fff; vertical-align: top; padding-bottom: 5px;  width: 24%; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
+                                </div>
+                                <div style="text-align: center;">
+                                        <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv1()"> Text Classification </button>
+
+                                        <button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv2()"> Entity Classification</button>
+                                </div>
+
+                                    var entityClassificationList = ViewBag.entityClassList;
+                                    <div hidden id="item2" name="dropDownDivs" style="text-align: center; display:none">
+                                        <select name="dropDowns" id="entityType" style="width: 75%;">
+                                            <option value=null selected="selected">Entity Classification</option>
+                                            @foreach (var entityClass in ViewBag.entityClassList)
+                                            {
+                                                <option value=@entityClass.EntityClassID>@entityClass.Classification</option>
+                                            }
+                                            <option value="test1" href="AddClass">+ Add Classification </option>
+                                        </select>
+                                    </div>
+                                    var textClassificationList = ViewBag.textClassList;
+                                    <div hidden id="item1" name="dropDownDivs" style="text-align: center; display:none">
+                                        <select name="dropDowns" id="textType" style="width: 75%;">
+                                            <option value=null selected="selected">Text Classification</option>
+                                            @foreach (var textClass in ViewBag.textClassList)
+                                            {
+                                                <option value=@textClass.TextClassID>@textClass.Classification</option>
+                                            }
+                                            <option value="test2" href="AddClass">+ Add Classification </option>
+                                        </select>
+                                    </div>
+                                    }
                                     <br />
-                                    <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv1()"> Text Classification </button>
+                                    <form style="text-align: center;">
+                                        <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;" placeholder="Add a comment to your annotation..."></textarea>
+                                    </form>
+                                    <br />
+                                    <div style="text-align:center;">
+                                        <button style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
+                                    </div>
+                                    <div>
+                                        <form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
+                                            <textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
+                                            <textarea disabled id="endSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
+                                        </form>
+                                        <input id="chars" name="chars" type="hidden" value=@ViewBag.allStartAndEndChars>
 
-                                    <button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv2()"> Entity Classification</button>
+                                    </div>
                                 </div>
-
-                                var entityClassificationList = ViewBag.entityClassList;
-                                <div hidden id="item2" style="text-align: center; display:none">
-                                    <select name="dropDowns" id="entityType" style="width: 455px">
-                                        <option value=null selected="selected">Entity Classification</option>
-                                        @foreach (var entityClass in ViewBag.entityClassList)
-                                        {
-                                            <option value=@entityClass.EntityClassID>@entityClass.Classification</option>
-                                        }
-                                        <option value="test1" href="AddClass">+ Add Classification </option>
-                                    </select>
-                                </div>
-                                var textClassificationList = ViewBag.textClassList;
-                                <div hidden id="item1" style="text-align: center; display:none">
-                                    <select name="dropDowns" id="textType" style="width: 455px" ;>
-                                        <option value=null selected="selected">Text Classification</option>
-                                        @foreach (var textClass in ViewBag.textClassList)
-                                        {
-                                            <option value=@textClass.TextClassID>@textClass.Classification</option>
-                                        }
-                                        <option value="test2" href="AddClass">+ Add Classification </option>
-                                    </select>
-                                </div>
-                            }
-                            <br />
-                            <form style="text-align: center;">
-                                <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;" placeholder="Add a comment to your annotation..."></textarea>
-                            </form>
-                            <br />
-                            <div style="text-align:center;">
-                                <button style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
-                            </div>
-                           
-                            <div>
-                                <form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
-                                    <textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
-                                    <textarea disabled id="endSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
-                                </form>
-                                <input id="chars" name="chars" type="hidden" value=@ViewBag.allStartAndEndChars>
-
-                            </div>
-                        </div>
                         <hr />
                         <div id="reference-viewer"></div>
                     </div>
@@ -263,6 +263,9 @@
                     items[3].value = "";
                     //hidden end char box
                     items[4].value = "";
+                    //popup
+                    popup = document.getElementById("myPopup");
+                    popup.innerHTML = "";
                     //text and entity classification dropdowns
                     var dropDownDivs = document.getElementsByName("dropDownDivs");
                     var dropDowns = document.getElementsByName("dropDowns");
@@ -276,7 +279,7 @@
                     textType.style.display = "none";
                     if (entityType.style.display === "block") {
 
-                        document.getElementById("btn1").disabled = true;
+                        document.getElementById("btn1").disabled = false;
                     }
                     else if (entityType.style.display === "none") {
 
@@ -284,7 +287,7 @@
                     }
                     if (textType.style.display === "block") {
 
-                        document.getElementById("btn2").disabled = true;
+                        document.getElementById("btn2").disabled = false;
                     }
                     else if (textType.style.display === "none") {
 
@@ -369,13 +372,11 @@
 
         // Use HiliteColor since some browsers apply BackColor to the whole block
         if (!document.execCommand("HiliteColor", false, colour)) {
-            document.execCommand("BackColor", false, colour);
             document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         } else {
-            var link = document.createElement("a");
-            link.innerHTML =
-                document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
+            //document.execCommand("BackColor", false, colour);
+            document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText);
             $('#classification-loading-indicator').hide();
             document.designMode = "off";
         }
@@ -397,7 +398,7 @@
 
         // Use HiliteColor since some browsers apply BackColor to the whole block
         if (!document.execCommand("HiliteColor", false, colour)) {
-            document.execCommand("BackColor", false, colour);
+            //document.execCommand("BackColor", false, colour);
             document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         } else {
@@ -422,7 +423,7 @@
         } else if (document.selection && document.selection.createRange) {
             // IE <= 8 case
             range = document.selection.createRange();
-            range.execCommand("BackColor", false, colour);
+            //range.execCommand("BackColor", false, colour);
             var id = annotation.annotationID;
             range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
@@ -448,7 +449,7 @@
         } else if (document.selection && document.selection.createRange) {
             // IE <= 8 case
             range = document.selection.createRange();
-            range.execCommand("BackColor", false, colour);
+            //range.execCommand("BackColor", false, colour);
             range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
         }
@@ -607,20 +608,10 @@
             type: "POST",
             url: "/Home/SaveDenyValue",
             data: { id: id, dislikes: dislikes },
-            success: function (data) {
-
-                if (data.result == "") {
-                    callPV(id);
-                } else {
-                    location.href = "/Home/SoftDelete";
-                }
-            
+            success: function () {
+                callPV(id);
             }
         });
     }
 
 </script>
-
-
-
-

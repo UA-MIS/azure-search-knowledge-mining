@@ -389,7 +389,6 @@ namespace CognitiveSearch.UI.Controllers
                     });
                 }
             }
-
             return new JsonResult(new DocumentResult { Results = response.Results, Facets = facetResults, Tags = tagsResults, Count = Convert.ToInt32(response.Count), Token = token, SearchId = searchId });
         }
 
@@ -508,7 +507,6 @@ namespace CognitiveSearch.UI.Controllers
                 eAnnotations[ch] = item;
                 ch++;
             }
-
             return new JsonResult(new DocumentResult { textStartChars = textStartChars, textEndChars = textEndChars, entityStartChars = entityStartChars, entityEndChars = entityEndChars, textAnnotations = tAnnotations, entityAnnotations = eAnnotations });
         }
 
@@ -524,16 +522,13 @@ namespace CognitiveSearch.UI.Controllers
             if (newAnnotation.ClassificationID.StartsWith("T"))
             {
                 TextClassification textClassification = await GetTextClassifications(pKey, rKey);
-                classification = textClassification.Classification;
-                //return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, textClassification = textClassification });
+                classification = textClassification.Classification;               
             }
             else if (newAnnotation.ClassificationID.StartsWith("E"))
             {
                 EntityClassification entityClassification = await GetEntityClassifications(pKey, rKey);
-                classification = entityClassification.Classification;
-                //return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, entityClassification = entityClassification });
+                classification = entityClassification.Classification;             
             }
-
             return new JsonResult(new DocumentResult { annotation = newAnnotation, comments = comments, classification = classification });
         }
 
@@ -594,8 +589,6 @@ namespace CognitiveSearch.UI.Controllers
                     textClassification = item;
                 }
             }
-
-
             return textClassification;
         }
 
@@ -638,7 +631,6 @@ namespace CognitiveSearch.UI.Controllers
                     entityClassification = item;
                 }
             }
-
             return entityClassification;
         }
 
@@ -853,7 +845,7 @@ namespace CognitiveSearch.UI.Controllers
                         token1 = queryResult1.ContinuationToken;
                     } while (token1 != null);
 
-                    //get all comments for specific annotatin
+                    //get all comments for specific annotation
                     foreach (var comment in allComments)
                     {
                         allAnnotationComments.Add(comment);
@@ -919,10 +911,10 @@ namespace CognitiveSearch.UI.Controllers
 
             int count = 0;
 
-            //get all comments for specific annotatin
+            //get all comments for specific annotation
             foreach (var comment in allAnnotationComments)
             {
-
+                
                 comment.ETag = "*";
                 comment.PartitionKey = commentPKeys[count];
                 comment.RowKey = commentRKeys[count];
@@ -937,40 +929,129 @@ namespace CognitiveSearch.UI.Controllers
                 count++;
             }
         }
-        public async Task<IActionResult> SoftDelete()
+
+
+		public IActionResult SaveEntityClass(string text) //saves NEW Entity Class to Entity Classifications Table
         {
-            //string doc = id;
+			string classification = text;
+			string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+			string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+			CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+			accountName, accountKey), true);
+
+			CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+			CloudTable Entityclassification = tableClient.GetTableReference("EntityClassifications");
+			
+			int classificationCounter = 1;
+
+			async void createEntity()
+			{
+				//retrieves annotation entity where partitionKey = counter in table
+				TableOperation retrieveOperation = TableOperation.Retrieve<EntityClassification>(classificationCounter.ToString(), "EC" + classificationCounter.ToString());
+				TableResult query = await Entityclassification.ExecuteAsync(retrieveOperation);
+
+				//if entity annotation exists add to counter
+				while (query.Result != null)
+				{
+					classificationCounter++;
+					retrieveOperation = TableOperation.Retrieve<EntityClassification>(classificationCounter.ToString(), "EC" + classificationCounter.ToString());
+
+					query = await Entityclassification.ExecuteAsync(retrieveOperation);
+				}
+
+				// Create an annotation entity and add it to the table.
+				EntityClassification EntityClassification = new EntityClassification(classificationCounter.ToString(), classificationCounter.ToString());
+				EntityClassification.EntityClassID = "EC" + classificationCounter.ToString();
+				EntityClassification.Classification = classification;
+
+				TableOperation insertOperation = TableOperation.Insert(EntityClassification);
+				await Entityclassification.ExecuteAsync(insertOperation);
+
+			}
+			createEntity();
+			return RedirectToAction("AddClass");
+		}
+
+        public IActionResult SaveDocClass(string text) //saves NEW Document Class to Document Classifications Table
+        {
+            string classification = text;
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
             string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
             CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
             accountName, accountKey), true);
+
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
-            CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
+            CloudTable Docclassification = tableClient.GetTableReference("DocClassifications");
 
-            var allAnnotations = new List<DeletedAnnotation>();
-            // CloudTable Comments = tableClient.GetTableReference("Comments");
-            //TableOperation retrieveOperation5 = TableOperation.Retrieve<Comment>(pKey, rKey);
-            TableContinuationToken token1 = null;
-            do
+            int classificationCounter = 1;
+
+            async void createDocClass()
             {
-                var x1 = new TableQuery<DeletedAnnotation>();
-                var queryResult1 = Task.Run(() => DeletedAnnotations.ExecuteQuerySegmentedAsync(x1, token1)).GetAwaiter().GetResult();
-                foreach (var item in queryResult1.Results)
+                //retrieves doc class where partitionKey = counter in table
+                TableOperation retrieveOperation = TableOperation.Retrieve<DocClassification>(classificationCounter.ToString(), "DC" + classificationCounter.ToString());
+                TableResult query = await Docclassification.ExecuteAsync(retrieveOperation);
+
+                //if doc class exists add to counter
+                while (query.Result != null)
                 {
-                    allAnnotations.Add(item);
-                }
-                token1 = queryResult1.ContinuationToken;
-            } while (token1 != null);
+                    classificationCounter++;
+                    retrieveOperation = TableOperation.Retrieve<DocClassification>(classificationCounter.ToString(), "DC" + classificationCounter.ToString());
 
-            ViewBag.text = "";
-            ViewBag.AnnotationList = allAnnotations.OrderBy(ann => ann.DocumentID);
-            if (allAnnotations.Count <= 0)
-            {
-                ViewBag.text = "There are no deleted annotations";
+                    query = await Docclassification.ExecuteAsync(retrieveOperation);
+                }
+
+                // Create an DOC CLASS and add it to the table.
+                DocClassification DocClassification = new DocClassification(classificationCounter.ToString(), classificationCounter.ToString());
+                DocClassification.DocClassID = "DC" + classificationCounter.ToString();
+                DocClassification.Classification = classification;
+
+                TableOperation insertOperation = TableOperation.Insert(DocClassification);
+                await Docclassification.ExecuteAsync(insertOperation);
+
             }
-            return View();
+            createDocClass();
+            return RedirectToAction("AddClass");
+        }
+
+        public IActionResult SaveTextClass(string text) //saves NEW Text Class to Text Classifications Table
+        {
+            string classification = text;
+            string accountName = _configuration.GetSection("StorageAccountName")?.Value;
+            string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
+            CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
+            accountName, accountKey), true);
+
+            CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+            CloudTable Textclassification = tableClient.GetTableReference("TextClassifications");
+
+            int classificationCounter = 1;
+
+            async void createTextClass()
+            {
+                //retrieves text class where partitionKey = counter in table
+                TableOperation retrieveOperation = TableOperation.Retrieve<TextClassification>(classificationCounter.ToString(), "TC" + classificationCounter.ToString());
+                TableResult query = await Textclassification.ExecuteAsync(retrieveOperation);
+
+                //if text class exists add to counter
+                while (query.Result != null)
+                {
+                    classificationCounter++;
+                    retrieveOperation = TableOperation.Retrieve<TextClassification>(classificationCounter.ToString(), "TC" + classificationCounter.ToString());
+
+                    query = await Textclassification.ExecuteAsync(retrieveOperation);
+                }
+
+                // Create an TEXT CLASS and add it to the table.
+                TextClassification TextClassification = new TextClassification(classificationCounter.ToString(), classificationCounter.ToString());
+                TextClassification.TextClassID = "TC" + classificationCounter.ToString();
+                TextClassification.Classification = classification;
+
+                TableOperation insertOperation = TableOperation.Insert(TextClassification);
+                await Textclassification.ExecuteAsync(insertOperation);
+
+            }
+            createTextClass();
+            return RedirectToAction("AddClass");
         }
     }
 }
-         
-  
