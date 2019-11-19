@@ -21,6 +21,9 @@ $('#prev-control').click(function () {
 
 function getTextAnnotations() {
 
+    div = document.getElementById("createAnn");
+    div.style.display = "none";
+
     var items = document.getElementsByName("saveInfo");
     var id = items[0].value;
 
@@ -43,6 +46,9 @@ function getTextAnnotations() {
     });
 }
 function getEntityAnnotations() {
+
+    div = document.getElementById("createAnn");
+    div.style.display = "none";
 
     var items = document.getElementsByName("saveInfo");
     var id = items[0].value;
@@ -172,6 +178,13 @@ function refreshTranscript() {
     $('#transcript-viewer-pre').html(transcriptContainerHTML);
     popup = document.getElementById("myPopup");
     popup.innerHTML = "";
+}
+
+function createAnn() {
+    var transcriptContainerHTML = htmlDecode(result.content.trim());
+    $('#transcript-viewer-pre').html(transcriptContainerHTML);
+    div = document.getElementById("createAnn");
+    div.style.display = "block";
 }
 
 function GetMatches(string, regex, index) {

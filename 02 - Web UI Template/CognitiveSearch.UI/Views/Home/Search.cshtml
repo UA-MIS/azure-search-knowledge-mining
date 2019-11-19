@@ -20,8 +20,6 @@
             <div id="details-modal-body" class="modal-body">
                 <div class="row" style="height: 75%;">
                     <div class="modal-control-group">
-                        <span id="prev-control" class="modal-control"><i class="ms-Icon ms-Icon--ChevronLeftMed"></i></span>
-                        <span id="next-control" class="modal-control"><i class="ms-Icon ms-Icon--ChevronRightMed"></i></span>
                         <span id="close-control" class="modal-control" data-dismiss="modal"><i class="ms-Icon ms-Icon--Clear"></i></span>
                     </div>
                     <div id="details-pivot" class="ms-Pivot col-md-8">
@@ -30,8 +28,6 @@
                         </div>
                     </div>
                     <div id="tags-panel" class="col-md-4">
-                        <div id="Highlight-Buttons"></div>
-                        <br />
                         <div id="transcript-search-box" class="ms-SearchBox">
                             <input class="ms-SearchBox-field" type="text" value="" id="transcript-search-input" placeholder="Search...">
                             <label class="ms-SearchBox-label">
@@ -44,35 +40,43 @@
                                 </button>
                             </div>
                         </div>
+                        @{ <br />
+                            <div style='text-align: center;'><strong><u>Document Classification</u></strong></div>
+                            var docClassificationList = ViewBag.docClassList;
+                            <div style="text-align: center;">
+                                <select name="dropDowns" id="docType" style="width: 75%; margin: 5px;">
+                                    <option id="option" value=null selected="selected">Document Classification</option>
+                                    @foreach (var docClass in ViewBag.docClassList)
+                                    {
+                                        <option value=@docClass.DocClassID>@docClass.Classification</option>
+                                    }
+                                    <option value="test3" href="AddClass">+ Add Classification </option>
+                                </select>
+                            </div>
+                            <br />
+                        }
+                        <div style='text-align: center;'><strong><u>View Annotations</u></strong></div>
+                        <div id="Highlight-Buttons"></div>
+                        <br />
+                        <div style='text-align: center;'><strong><u>Create New Annotation</u></strong></div>
                         <div id="details-viewer" style="display:none"></div>
-                        <div id="tag-viewer"></div>
-                        <div>
+                        <div style="text-align: center;">
+                                <input type="button" style="color: #fff; margin: 5px; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;"onclick="createAnn()" value="Create New Annotation">
+                            </div>
                             @*UA MIS ADDED HTML*@
-                            @{ <br />
-                                var docClassificationList = ViewBag.docClassList;
-                                        <div style="text-align: center;">
-                                            <select name="dropDowns" id="docType" style="width: 75%;">
-                                                <option id="option" value=null selected="selected">Document Classification</option>
-                                                @foreach (var docClass in ViewBag.docClassList)
-                                                {
-                                                    <option value=@docClass.DocClassID>@docClass.Classification</option>
-                                                }
-                                                <option value="test3" href="AddClass">+ Add Classification </option>
-                                            </select>
-                                        </div>
-                                <br />
-                                <div class="log"></div>
-                                <div style="text-align: center;">
-                                    <form id="annotateForm" name="annotateForm" style="display:inline;">
-                                        <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; text-align:center; width: 50%;"></textarea>
-                                    </form>
-                                    <button style="color: #fff; vertical-align: top; padding-bottom: 5px;  width: 24%; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
-                                </div>
-                                <div style="text-align: center;">
+                            <div id="createAnn" style="display: none">
+                                @{
+                                    <div style="text-align: center;">
+                                        <form id="annotateForm" name="annotateForm" style="display:inline;">
+                                            <textarea disabled id="selectedtext" name="saveInfo" rows="1" cols="36" style="resize:none; margin: 5px; text-align:center; width: 50%; "></textarea>
+                                        </form>
+                                        <button style="color: #fff; vertical-align: top; padding-bottom: 5px; margin: 5px; width: 24%; background-color: #0078d7; border: 1px solid transparent;  font-size: 13px;" onclick="annotate()">Annotate</button>
+                                    </div>
+                                    <div style="text-align: center;">
                                         <button id="btn1" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv1()"> Text Classification </button>
 
                                         <button id="btn2" style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent;  font-size: .75vw;" onClick="togglediv2()"> Entity Classification</button>
-                                </div>
+                                    </div>
 
                                     var entityClassificationList = ViewBag.entityClassList;
                                     <div hidden id="item2" name="dropDownDivs" style="text-align: center; display:none">
@@ -96,28 +100,26 @@
                                             <option value="test2" href="AddClass">+ Add Classification </option>
                                         </select>
                                     </div>
-                                    }
-                                    <br />
-                                    <form style="text-align: center;">
-                                        <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;" placeholder="Add a comment to your annotation..."></textarea>
-                                    </form>
-                                    <br />
-                                    <div style="text-align:center;">
-                                        <button style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
-                                    </div>
-                                    <div>
-                                        <form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
-                                            <textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
-                                            <textarea disabled id="endSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
-                                        </form>
-                                        <input id="chars" name="chars" type="hidden" value=@ViewBag.allStartAndEndChars>
-
-                                    </div>
+                                }
+                                <br />
+                                <form style="text-align: center;">
+                                    <textarea rows="4" cols="50" name="saveInfo" id=“commentBox” style="resize:none; width: 75%;" placeholder="Add a comment to your annotation..."></textarea>
+                                </form>
+                                <br />
+                                <div style="text-align:center;">
+                                    <button style="color: #fff; background-color: #0078d7; margin: 30px; width: 20%; border: 1px solid transparent; font-size: 13px;" onclick="save()">Save</button>
                                 </div>
-                        <hr />
-                        <div id="reference-viewer"></div>
+                                <div>
+                                    <form class="col-md-pull-6" id="annotateCharForm" name="annotateCharForm" style="display:inline;">
+                                        <textarea disabled id="startSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
+                                        <textarea disabled id="endSelectedTextChar" name="saveInfo" rows="1" cols="36" style="resize:none; display: none; text-align:center;"></textarea>
+                                    </form>
+                                    <input id="chars" name="chars" type="hidden" value=@ViewBag.allStartAndEndChars>
+                                </div>
+                            </div>
+                            <hr />
+                        </div>
                     </div>
-                </div>
             </div>
         </div>
     </div>
@@ -190,6 +192,7 @@
 <script>
     // Function to get the Selected Text
     function annotate() {
+
         var selectedText = '';
 
         // window.getSelection
@@ -363,24 +366,19 @@
             var range = sel.getRangeAt(0);
         }
         document.designMode = "on";
-        if (range) {
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
+        
+            var id = annotation.annotationID;
+            range.deleteContents();
+            var el = document.createElement("span");
+            el.innerHTML = '<span style="background-color:' + colour + '; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>';
+            var frag = document.createDocumentFragment(), node, lastNode;
+            while ( (node = el.firstChild) ) {
+                lastNode = frag.appendChild(node);
+            }
+            range.insertNode(frag);
 
-        var id = annotation.annotationID;
-
-        // Use HiliteColor since some browsers apply BackColor to the whole block
-        if (!document.execCommand("HiliteColor", false, colour)) {
-            document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-            $('#classification-loading-indicator').hide();
-        } else {
-            //document.execCommand("BackColor", false, colour);
-            document.execCommand("insertHTML", false, '<span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText);
             $('#classification-loading-indicator').hide();
             document.designMode = "off";
-        }
-
     }
 
     function makeEditableAndHighlightEntity(colour, annotation) {
@@ -389,74 +387,43 @@
             var range = sel.getRangeAt(0);
         }
         document.designMode = "on";
-        if (range) {
-            sel.removeAllRanges();
-            sel.addRange(range);
-        }
+        
+            var id = annotation.annotationID;
+            range.deleteContents();
+            var el = document.createElement("span");
+            el.innerHTML = '<span style="background-color:' + colour + '; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>';
+            var frag = document.createDocumentFragment(), node, lastNode;
+            while ( (node = el.firstChild) ) {
+                lastNode = frag.appendChild(node);
+            }
+            range.insertNode(frag);
 
-        var id = annotation.annotationID;
-
-        // Use HiliteColor since some browsers apply BackColor to the whole block
-        if (!document.execCommand("HiliteColor", false, colour)) {
-            //document.execCommand("BackColor", false, colour);
-            document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-            $('#classification-loading-indicator').hide();
-        } else {
-            document.execCommand("insertHTML", false, '<span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
             $('#classification-loading-indicator').hide();
             document.designMode = "off";
-        }
-
     }
 
-    function highlightText(colour, annotation) {
-        var range, sel;
-        if (window.getSelection) {
-            // IE9 and non-IE
-            try {
-                if (!document.execCommand("BackColor", false, colour)) {
-                    makeEditableAndHighlightText(colour, annotation);
-                }
-            } catch (ex) {
-                makeEditableAndHighlightText(colour, annotation)
-            }
-        } else if (document.selection && document.selection.createRange) {
-            // IE <= 8 case
-            range = document.selection.createRange();
-            //range.execCommand("BackColor", false, colour);
-            var id = annotation.annotationID;
-            range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-            $('#classification-loading-indicator').hide();
-        } else {
-            var id = annotation.annotationID;
-            range.execCommand("insertHTML", false, '<br /><span style="background-color: yellow; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-            $('#classification-loading-indicator').hide();
+    function textRange(startChars, endChars, annotations) {
+
+        for (var i = 0; i < startChars.length; i++) {
+            selectTextRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
         }
     }
 
-    function highlightEntity(colour, annotation) {
-        var range, sel;
-        var id = annotation.annotationID;
-        if (window.getSelection) {
-            // IE9 and non-IE
-            try {
-                if (!document.execCommand("BackColor", false, colour)) {
-                    makeEditableAndHighlightEntity(colour, annotation);
-                }
-            } catch (ex) {
-                makeEditableAndHighlightEntity(colour, annotation)
-            }
-        } else if (document.selection && document.selection.createRange) {
-            // IE <= 8 case
-            range = document.selection.createRange();
-            //range.execCommand("BackColor", false, colour);
-            range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-            $('#classification-loading-indicator').hide();
+    function entityRange(startChars, endChars, annotations) {
+
+        for (var i = 0; i < startChars.length; i++) {
+            selectEntityRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
         }
-        else {
-            range.execCommand("insertHTML", false, '<br /><span style="background-color: chartreuse; cursor: pointer;" onclick="callPV(' + "'" + id + "'" + ')">' + annotation.highlightedText + '</span>');
-            $('#classification-loading-indicator').hide();
-        }
+    }
+
+    function selectTextRange(id, start, end, annotation) {
+        setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
+        makeEditableAndHighlightText("yellow", annotation);
+    }
+
+    function selectEntityRange(id, start, end, annotation) {
+        setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
+        makeEditableAndHighlightEntity("chartreuse", annotation);
     }
 
     function callPV(id) {
@@ -485,31 +452,6 @@
             }
         });
     }
-
-    function textRange(startChars, endChars, annotations) {
-
-        for (var i = 0; i < startChars.length; i++) {
-            selectTextRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
-        }
-    }
-
-    function entityRange(startChars, endChars, annotations) {
-
-        for (var i = 0; i < startChars.length; i++) {
-            selectEntityRange(document.getElementById("transcript-viewer-pre"), startChars[i], endChars[i], annotations[i])
-        }
-    }
-
-    function selectTextRange(id, start, end, annotation) {
-        setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
-        highlightText("yellow", annotation);
-    }
-
-    function selectEntityRange(id, start, end, annotation) {
-        setSelectionRange(document.getElementById("transcript-viewer-pre"), start, end);
-        highlightEntity("chartreuse", annotation);
-    }
-
 </script>
 <script>
     function togglediv1() {
