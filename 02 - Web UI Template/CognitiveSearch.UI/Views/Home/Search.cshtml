@@ -232,8 +232,7 @@
         document.annotateCharForm.startSelectedTextChar.value = start.toString();
         document.annotateCharForm.endSelectedTextChar.value = end.toString();
     }
-</script>
-<script>
+
     // Function to save everything to table
     function save() {
 
@@ -309,8 +308,7 @@
         }
 
     }
-</script>
-<script>
+
     //Functions to highlight all previous annotations
     function getTextNodesIn(node) {
         var textNodes = [];
@@ -452,8 +450,7 @@
             }
         });
     }
-</script>
-<script>
+
     function togglediv1() {
         var div = document.getElementById("item1");
         var dropDown = document.getElementById("textType");
@@ -489,32 +486,27 @@
     }
 
 
-</script>
 
 @*redirects + Add Classification to new webpage*@
-<script>
+
     document.getElementById('entityType').onchange = function () {
         if (document.getElementById('entityType').value == "test1") {
             window.location.href = this.children[this.selectedIndex].getAttribute('href');
         }
     }
-</script>
-<script>
+
     document.getElementById('textType').onchange = function () {
         if (document.getElementById('textType').value == "test2") {
             window.location.href = this.children[this.selectedIndex].getAttribute('href');
         }
     }
-</script>
-<script>
+
     document.getElementById('docType').onchange = function () {
         if (document.getElementById('docType').value == "test3") {
             window.location.href = this.children[this.selectedIndex].getAttribute('href');
         }
     }
-</script>
 
-<script>
     function docClassDisplay(classID, docClassification) {
         var list = document.getElementById("option");
         list.value = classID;
@@ -551,9 +543,20 @@
             url: "/Home/SaveDenyValue",
             data: { id: id, dislikes: dislikes },
             success: function () {
-                callPV(id);
+                if (dislikes >= 5) {
+                    showDeleted();
+                } else {
+                    callPV(id);
+                }
             }
         });
     }
+
+    function showDeleted() {
+        window.location.href = "/Home/SoftDelete";
+        
+
+    }
+
 
 </script>
