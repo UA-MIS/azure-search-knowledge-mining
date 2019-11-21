@@ -33,5 +33,6 @@ namespace CognitiveSearch.UI
         public string docClassification { get; set; }
         public string classID { get; set; }
 		public int Deny { get; set; }
+        public string denyResult { get; set; }
     }
 }

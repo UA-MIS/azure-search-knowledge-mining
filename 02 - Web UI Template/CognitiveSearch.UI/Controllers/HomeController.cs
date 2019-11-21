@@ -796,6 +796,7 @@ namespace CognitiveSearch.UI.Controllers
                 {
                     TableOperation insertOperation3 = TableOperation.Replace(annotation);
                     await Annotations.ExecuteAsync(insertOperation3);
+                  
                 }
                 else
                 {
@@ -880,13 +881,14 @@ namespace CognitiveSearch.UI.Controllers
 
                     //Delete annotation from annotation table and all comments related
                     DeletedAnnotationAndComments(annotation, apkey, arkey, allAnnotationComments, allCommentPKeys, allCommentRKeys);
-
+            
                 }
 
             }
             updateAnnotation();
 
-            return Json("Accept has been saved.");
+            //return new JsonResult(new DocumentResult { denyResult = denyResult });
+            return Json("Deny has been saved.");
         }
 
         async void DeletedAnnotationAndComments(Annotation annotation, string pkey, string rkey, List<Comment> allAnnotationComments, List<string> commentPKeys, List<string> commentRKeys)
@@ -1054,7 +1056,7 @@ namespace CognitiveSearch.UI.Controllers
             return RedirectToAction("AddClass");
         }
 
-        public async Task<IActionResult> SoftDelete()
+        public IActionResult SoftDelete()
         {
             //string doc = id;
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
