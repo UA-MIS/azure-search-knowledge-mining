@@ -25,7 +25,7 @@
 <div class="content row">
 
 
-    <div class="col-md-11">
+    <div class="col-md-6" style="text-align: center;">
         <h5>LEARN MORE</h5>
         <div style="font-size:16px;">
             <a href="https://azure.microsoft.com/en-us/services/search/">Azure Search</a>
@@ -42,20 +42,14 @@
         </div>
     </div>
    
-
-    <div class="col-md-1">
-
-
+    <div class="col-md-6" style="text-align: center;">
         <h5>ANNOTATION LINKS</h5>
-
         <div style="font-size:16px;">
-            @Html.ActionLink("Soft Delete",
-    "SoftDelete")
+            @Html.ActionLink("Deleted Annotations", "SoftDelete")
         </div>
         <div style="font-size:16px;">
-            <a href="http://localhost:53096/Home/AddClass">Create New Classification</a>
+            @Html.ActionLink("Add Classification", "AddClass")
         </div>
-
     </div>
 </div>
    

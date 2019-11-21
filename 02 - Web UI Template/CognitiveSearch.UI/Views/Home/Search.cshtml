@@ -361,6 +361,7 @@
     }
 
     function makeEditableAndHighlightText(colour, annotation) {
+
         var sel = window.getSelection();
         if (sel.rangeCount && sel.getRangeAt) {
             var range = sel.getRangeAt(0);
@@ -439,7 +440,7 @@
                 var deny = data.annotation.deny;
                 var accept = data.annotation.accept;
                 var popup = document.getElementById("myPopup");
-                popup.innerHTML = "<br /><div style='text-align: center;'><strong><u>DETAILS</u></strong></div>" + "<p><br /><strong>ID:</strong> " + annID + "<br />"
+                popup.innerHTML = "<br /><div style='text-align: center;'><strong><u>Details</u></strong></div>" + "<p><br /><strong>ID:</strong> " + annID + "<br />"
                     + "<strong>Annotation:</strong> " + text + "<br />"
                     + "<strong>Annotation Comment:</strong> " + comments + "<br />"
                     + "<strong>Classification:</strong> " + classification + "</p>" + "<div style='text-align: center;'>" + "<div style='text-align: center;'>" + "<button id='accept-btn'  value = 'likes' onclick='thumbsUp(" + '"' + annID + '"' + ", " + '"' + accept + '"' + ")' style='background-color: #0078d7; border: 1px solid transparent; color:white;  margin: 15px; font-size: 13px;'>"
