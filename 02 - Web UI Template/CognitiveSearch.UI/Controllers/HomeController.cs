@@ -250,17 +250,15 @@ namespace CognitiveSearch.UI.Controllers
             CloudTable Documents = tableClient.GetTableReference("Documents");
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
             CloudTable Comments = tableClient.GetTableReference("Comments");
-            CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
-            CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
 
-            //add entity to existing annotation table
-            async void createEntity()
+            //add New Annotation to existing annotation table
+            async void addAnnotation()
             {
                 //retrieves annotation entity where partitionKey = counter in table
                 TableOperation retrieveOperation = TableOperation.Retrieve<Annotation>(annotationCounter.ToString(), "A" + annotationCounter.ToString());
                 TableResult query = await Annotations.ExecuteAsync(retrieveOperation);
 
-                //if entity annotation exists add to counter
+                //if annotation with PKey and RKey exists add to counter
                 while (query.Result != null)
                 {
                     annotationCounter++;
@@ -269,7 +267,7 @@ namespace CognitiveSearch.UI.Controllers
                     query = await Annotations.ExecuteAsync(retrieveOperation);
                 }
 
-                // Create an annotation entity and add it to the table.
+                // Create an New annotation and add it to the table.
                 Annotation Annotation = new Annotation(annotationCounter.ToString(), annotationCounter.ToString());
                 Annotation.AnnotationID = "A" + annotationCounter.ToString();
                 Annotation.DocumentID = docID;
@@ -332,6 +330,7 @@ namespace CognitiveSearch.UI.Controllers
                     AddCommentEntities();
                 }
 
+                //Gets Document from Document table
                 TableOperation retrieveOperation4 = TableOperation.Retrieve<Document>(docID, docID + "_Doc");
                 TableResult query4 = await Documents.ExecuteAsync(retrieveOperation4);
 
@@ -347,7 +346,7 @@ namespace CognitiveSearch.UI.Controllers
                 }
                 UpdateDocumentEntities();
             }
-            createEntity();
+            addAnnotation();
 
             return Json("Annotation has been saved.");
         }
@@ -437,7 +436,7 @@ namespace CognitiveSearch.UI.Controllers
         [HttpPost]
         public IActionResult getArrayOfChars(string id)
         {
-            //Redisplay all past annotations
+            //Redisplay all past annotations for current document
             // connect to storage account
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
             string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
@@ -445,7 +444,10 @@ namespace CognitiveSearch.UI.Controllers
             accountName, accountKey), true);
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
+
+            //Get Annotation Table
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
+            //Make list of all annotations
             var allAnnotations = new List<Annotation>();
             TableContinuationToken token1 = null;
             do
@@ -459,6 +461,7 @@ namespace CognitiveSearch.UI.Controllers
                 token1 = queryResult1.ContinuationToken;
             } while (token1 != null);
 
+            //Make list of annotations associated with this document
             var allDocAnnotations = new List<Annotation>();
             foreach (var annotation in allAnnotations)
             {
@@ -468,7 +471,7 @@ namespace CognitiveSearch.UI.Controllers
                 }
             }
 
-
+            //Make lists for text and entity classifications
             var textAnnotations = new List<Annotation>();
             var entityAnnotations = new List<Annotation>();
 
@@ -484,6 +487,7 @@ namespace CognitiveSearch.UI.Controllers
                 }
             }
 
+            //make lists for the start and end characters of text annotations
             int c = 0;
             string[] textStartChars = new string[textAnnotations.Count()];
             string[] textEndChars = new string[textAnnotations.Count()];
@@ -496,6 +500,7 @@ namespace CognitiveSearch.UI.Controllers
                 c++;
             }
 
+            //make lists for the start and end characters of entity annotations
             int ch = 0;
             string[] entityStartChars = new string[entityAnnotations.Count()];
             string[] entityEndChars = new string[entityAnnotations.Count()];
@@ -510,22 +515,27 @@ namespace CognitiveSearch.UI.Controllers
             return new JsonResult(new DocumentResult { textStartChars = textStartChars, textEndChars = textEndChars, entityStartChars = entityStartChars, entityEndChars = entityEndChars, textAnnotations = tAnnotations, entityAnnotations = eAnnotations });
         }
 
-        public async Task<IActionResult> PartialView(string id)
+        public async Task<IActionResult> AnnotationView(string id)
         {
             string pKey = id.Trim('A');
             string rKey = id;
             string classification = "";
 
+            //get annotation
             Annotation newAnnotation = await GetAnnotation(pKey, rKey);
+            //get all comments on that annotation
             List<string> comments = await GetComments(pKey, rKey);
 
+            //check if annotation is classified as text or entity
             if (newAnnotation.ClassificationID.StartsWith("T"))
             {
+                //get classification
                 TextClassification textClassification = await GetTextClassifications(pKey, rKey);
                 classification = textClassification.Classification;               
             }
             else if (newAnnotation.ClassificationID.StartsWith("E"))
             {
+                //get classification
                 EntityClassification entityClassification = await GetEntityClassifications(pKey, rKey);
                 classification = entityClassification.Classification;             
             }
@@ -550,7 +560,7 @@ namespace CognitiveSearch.UI.Controllers
             return annotation;
         }
 
-        ////text redisplay
+        //text redisplay
         async Task<TextClassification> GetTextClassifications(string pKey, string rKey)
         {
             // connect to storage account
@@ -561,11 +571,13 @@ namespace CognitiveSearch.UI.Controllers
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
+            //Get annotation
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
             TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
             TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
             Annotation annotation = query4.Result as Annotation;
 
+            //Get list of text classifications
             CloudTable TextClassifications = tableClient.GetTableReference("TextClassifications");
             var allTextClassification = new List<TextClassification>();
             TableContinuationToken token2 = null;
@@ -589,10 +601,12 @@ namespace CognitiveSearch.UI.Controllers
                     textClassification = item;
                 }
             }
+
+            //return annotations classification
             return textClassification;
         }
 
-        ////entity redisplay
+        //entity redisplay
         async Task<EntityClassification> GetEntityClassifications(string pKey, string rKey)
         {
             // connect to storage account
@@ -603,11 +617,13 @@ namespace CognitiveSearch.UI.Controllers
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
+            //Get annotation
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
             TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
             TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
             Annotation annotation = query4.Result as Annotation;
 
+            //Get list of text classifications
             CloudTable EntityClassifications = tableClient.GetTableReference("EntityClassifications");
             var allEntityClassification = new List<EntityClassification>();
             TableContinuationToken token3 = null;
@@ -631,6 +647,8 @@ namespace CognitiveSearch.UI.Controllers
                     entityClassification = item;
                 }
             }
+
+            //return annotations classification
             return entityClassification;
         }
 
@@ -645,11 +663,13 @@ namespace CognitiveSearch.UI.Controllers
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
+            //Get annotation
             CloudTable Annotations = tableClient.GetTableReference("Annotations");
             TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
             TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
             Annotation annotation = query4.Result as Annotation;
 
+            //Get list opf all comments
             var allComments = new List<Comment>();
             CloudTable Comments = tableClient.GetTableReference("Comments");
             TableOperation retrieveOperation5 = TableOperation.Retrieve<Comment>(pKey, rKey);
@@ -665,6 +685,7 @@ namespace CognitiveSearch.UI.Controllers
                 token1 = queryResult1.ContinuationToken;
             } while (token1 != null);
 
+            //Get list of all coments associated with this annotation
             var allAnnComments = new List<string>();
             foreach (var comment in allComments)
             {
@@ -690,15 +711,15 @@ namespace CognitiveSearch.UI.Controllers
 
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 
+            //Get document
             CloudTable Documents = tableClient.GetTableReference("Documents");
             TableOperation retrieveOperation4 = TableOperation.Retrieve<Document>(id, id + "_Doc");
             TableResult query4 = await Documents.ExecuteAsync(retrieveOperation4);
-
-            // Update the document entity in the table.
             Document document = query4.Result as Document;
 
             if (document.DocClassID != "null")
             {
+                //Get list of all classifications
                 CloudTable DocClassifications = tableClient.GetTableReference("DocClassifications");
                 var allDocClassifications = new List<DocClassification>();
                 TableContinuationToken token3 = null;
@@ -713,8 +734,7 @@ namespace CognitiveSearch.UI.Controllers
                     token3 = queryResult3.ContinuationToken;
                 } while (token3 != null);
 
-
-
+                //Get this documents classification
                 foreach (var item in allDocClassifications)
                 {
                     if (item.DocClassID == document.DocClassID)
@@ -752,13 +772,14 @@ namespace CognitiveSearch.UI.Controllers
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             async void updateAnnotation()
             {
-
+                //Get annotation
                 CloudTable Annotations = tableClient.GetTableReference("Annotations");
                 TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
                 TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
                 Annotation annotation = query4.Result as Annotation;
+                //Update accept value
                 annotation.Accept = likes;
-
+                //Update annotation in table
                 TableOperation insertOperation3 = TableOperation.Replace(annotation);
                 await Annotations.ExecuteAsync(insertOperation3);
             }
@@ -767,8 +788,6 @@ namespace CognitiveSearch.UI.Controllers
 
 
         }
-
-
 
         public IActionResult SaveDenyValue(string id, int dislikes)
         {
@@ -784,24 +803,27 @@ namespace CognitiveSearch.UI.Controllers
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             async void updateAnnotation()
             {
+                //Get annotation
                 CloudTable Annotations = tableClient.GetTableReference("Annotations");
                 TableOperation retrieveOperation4 = TableOperation.Retrieve<Annotation>(pKey, rKey);
                 TableResult query4 = await Annotations.ExecuteAsync(retrieveOperation4);
                 Annotation annotation = query4.Result as Annotation;
                 string apkey = annotation.PartitionKey;
                 string arkey = annotation.RowKey;
+                //Update deny value
                 annotation.Deny = dislikes;
 
                 if (annotation.Deny < 5)
                 {
+                    //update annotation in table
                     TableOperation insertOperation3 = TableOperation.Replace(annotation);
                     await Annotations.ExecuteAsync(insertOperation3);
                   
                 }
                 else
                 {
-                    //insert into soft delete tables comment and annotation
-                    //Soft Delete Tables
+                    //insert into soft delete tables
+                    //Get Soft delete Tables
                     CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
                     CloudTable DeletedComments = tableClient.GetTableReference("DeletedComments");
                     Comment c = new Comment();
@@ -811,7 +833,7 @@ namespace CognitiveSearch.UI.Controllers
                     TableOperation retrieveOperation = TableOperation.Retrieve<DeletedAnnotation>(annotationCounter.ToString(), "DA" + annotationCounter.ToString());
                     TableResult query = await DeletedAnnotations.ExecuteAsync(retrieveOperation);
 
-                    //if entity annotation exists add to counter
+                    //if deleted annotation with PKey and RKey exists add to counter
                     while (query.Result != null)
                     {
                         annotationCounter++;
@@ -855,12 +877,12 @@ namespace CognitiveSearch.UI.Controllers
 
                         if (comment.AnnotationID == annotation.AnnotationID)
                         {
-                            //retrieves annotation entity where partitionKey = counter in table
+                            //retrieves Comment where partitionKey = counter in table
                             int commentCounter = 1;
                             TableOperation retrieveOperation2 = TableOperation.Retrieve<DeletedComment>(commentCounter.ToString(), "DC" + commentCounter.ToString());
                             TableResult query2 = await DeletedComments.ExecuteAsync(retrieveOperation2);
 
-                            //if entity annotation exists add to counter
+                            //if comment exists add to counter
                             while (query2.Result != null)
                             {
                                 commentCounter++;
@@ -876,23 +898,19 @@ namespace CognitiveSearch.UI.Controllers
                             await DeletedComments.ExecuteAsync(insertOperation2);
 
                         }
-
                     }
-
                     //Delete annotation from annotation table and all comments related
                     DeletedAnnotationAndComments(annotation, apkey, arkey, allAnnotationComments, allCommentPKeys, allCommentRKeys);
-            
                 }
-
             }
             updateAnnotation();
 
-            //return new JsonResult(new DocumentResult { denyResult = denyResult });
             return Json("Deny has been saved.");
         }
 
         async void DeletedAnnotationAndComments(Annotation annotation, string pkey, string rkey, List<Comment> allAnnotationComments, List<string> commentPKeys, List<string> commentRKeys)
         {
+            // connect to storage account
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
             string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
             CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
@@ -935,12 +953,14 @@ namespace CognitiveSearch.UI.Controllers
 
 		public IActionResult SaveEntityClass(string text) //saves NEW Entity Class to Entity Classifications Table
         {
-			string classification = text;
+            // connect to storage account
+            string classification = text;
 			string accountName = _configuration.GetSection("StorageAccountName")?.Value;
 			string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
 			CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
 			accountName, accountKey), true);
 
+            //Get entity classification table
 			CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
 			CloudTable Entityclassification = tableClient.GetTableReference("EntityClassifications");
 			
@@ -948,11 +968,11 @@ namespace CognitiveSearch.UI.Controllers
 
 			async void createEntity()
 			{
-				//retrieves annotation entity where partitionKey = counter in table
+				//retrieves annotation where partitionKey = counter in table
 				TableOperation retrieveOperation = TableOperation.Retrieve<EntityClassification>(classificationCounter.ToString(), "EC" + classificationCounter.ToString());
 				TableResult query = await Entityclassification.ExecuteAsync(retrieveOperation);
 
-				//if entity annotation exists add to counter
+				//if annotation with PKey and RKey exists add to counter
 				while (query.Result != null)
 				{
 					classificationCounter++;
@@ -961,7 +981,7 @@ namespace CognitiveSearch.UI.Controllers
 					query = await Entityclassification.ExecuteAsync(retrieveOperation);
 				}
 
-				// Create an annotation entity and add it to the table.
+				// Create an annotation and add it to the table.
 				EntityClassification EntityClassification = new EntityClassification(classificationCounter.ToString(), classificationCounter.ToString());
 				EntityClassification.EntityClassID = "EC" + classificationCounter.ToString();
 				EntityClassification.Classification = classification;
@@ -976,12 +996,14 @@ namespace CognitiveSearch.UI.Controllers
 
         public IActionResult SaveDocClass(string text) //saves NEW Document Class to Document Classifications Table
         {
+            // connect to storage account
             string classification = text;
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
             string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
             CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
             accountName, accountKey), true);
 
+            //Get document classification table
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             CloudTable Docclassification = tableClient.GetTableReference("DocClassifications");
 
@@ -993,7 +1015,7 @@ namespace CognitiveSearch.UI.Controllers
                 TableOperation retrieveOperation = TableOperation.Retrieve<DocClassification>(classificationCounter.ToString(), "DC" + classificationCounter.ToString());
                 TableResult query = await Docclassification.ExecuteAsync(retrieveOperation);
 
-                //if doc class exists add to counter
+                //if doc class with PKey and RKey exists add to counter
                 while (query.Result != null)
                 {
                     classificationCounter++;
@@ -1002,7 +1024,7 @@ namespace CognitiveSearch.UI.Controllers
                     query = await Docclassification.ExecuteAsync(retrieveOperation);
                 }
 
-                // Create an DOC CLASS and add it to the table.
+                // Create a DOC CLASS and add it to the table.
                 DocClassification DocClassification = new DocClassification(classificationCounter.ToString(), classificationCounter.ToString());
                 DocClassification.DocClassID = "DC" + classificationCounter.ToString();
                 DocClassification.Classification = classification;
@@ -1017,12 +1039,14 @@ namespace CognitiveSearch.UI.Controllers
 
         public IActionResult SaveTextClass(string text) //saves NEW Text Class to Text Classifications Table
         {
+            // connect to storage account
             string classification = text;
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
             string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
             CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
             accountName, accountKey), true);
 
+            //Get text classification table
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             CloudTable Textclassification = tableClient.GetTableReference("TextClassifications");
 
@@ -1034,7 +1058,7 @@ namespace CognitiveSearch.UI.Controllers
                 TableOperation retrieveOperation = TableOperation.Retrieve<TextClassification>(classificationCounter.ToString(), "TC" + classificationCounter.ToString());
                 TableResult query = await Textclassification.ExecuteAsync(retrieveOperation);
 
-                //if text class exists add to counter
+                //if text class with PKey and RKey exists add to counter
                 while (query.Result != null)
                 {
                     classificationCounter++;
@@ -1056,19 +1080,21 @@ namespace CognitiveSearch.UI.Controllers
             return RedirectToAction("AddClass");
         }
 
-        public IActionResult SoftDelete()
+        public IActionResult SoftDelete(string id)
         {
-            //string doc = id;
+            // connect to storage account
             string accountName = _configuration.GetSection("StorageAccountName")?.Value;
             string accountKey = _configuration.GetSection("StorageAccountKey")?.Value;
             CloudStorageAccount storageAccount = new CloudStorageAccount(new Microsoft.WindowsAzure.Storage.Auth.StorageCredentials(
             accountName, accountKey), true);
+
+            //Get Deleted annotations table
             CloudTableClient tableClient = storageAccount.CreateCloudTableClient();
             CloudTable DeletedAnnotations = tableClient.GetTableReference("DeletedAnnotations");
 
+            //Make list of all deleted annotations
             var allAnnotations = new List<DeletedAnnotation>();
-            // CloudTable Comments = tableClient.GetTableReference("Comments");
-            //TableOperation retrieveOperation5 = TableOperation.Retrieve<Comment>(pKey, rKey);
+
             TableContinuationToken token1 = null;
             do
             {
