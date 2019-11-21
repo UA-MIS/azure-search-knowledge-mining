@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "b857e2d9-6179-4855-840a-9c5e36fb4d7d",
+		"name": "Saving Enriched Documents",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1 - Create Index",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "api-key",
+						"value": "{{env_search_api_key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"index2\",\r\n    \"defaultScoringProfile\": null,\r\n    \r\n  \"fields\": [\r\n    {\r\n      \"name\": \"id\",\r\n      \"type\": \"Edm.String\",\r\n      \"key\": true,\r\n      \"searchable\": true,\r\n      \"filterable\": true,\r\n      \"facetable\": false,\r\n      \"sortable\": true\r\n    },\r\n    {\r\n      \"name\": \"content\",\r\n      \"type\": \"Edm.String\",\r\n      \"sortable\": false,\r\n      \"searchable\": true,\r\n      \"filterable\": false,\r\n      \"facetable\": false\r\n    },\r\n    {\r\n      \"name\": \"keyPhrases\",\r\n      \"type\": \"Collection(Edm.String)\",\r\n      \"searchable\": true,\r\n      \"sortable\": false,\r\n      \"filterable\": true,\r\n      \"facetable\": true\r\n    },\r\n    {\r\n      \"name\": \"organizations\",\r\n      \"type\": \"Collection(Edm.String)\",\r\n      \"searchable\": true,\r\n      \"sortable\": false,\r\n      \"filterable\": true,\r\n      \"facetable\": true\r\n    },\r\n        {\r\n      \"name\": \"persons\",\r\n      \"type\": \"Collection(Edm.String)\",\r\n      \"searchable\": true,\r\n      \"sortable\": false,\r\n      \"filterable\": true,\r\n      \"facetable\": true\r\n    },\r\n        {\r\n      \"name\": \"locations\",\r\n      \"type\": \"Collection(Edm.String)\",\r\n      \"searchable\": true,\r\n      \"sortable\": false,\r\n      \"filterable\": true,\r\n      \"facetable\": true\r\n    },\r\n    {\r\n      \"name\": \"metadata_storage_path\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": true,\r\n      \"sortable\": false,\r\n      \"filterable\": false,\r\n      \"facetable\": false\r\n    },\r\n    {\r\n      \"name\": \"metadata_storage_name\",\r\n      \"type\": \"Edm.String\",\r\n      \"searchable\": true,\r\n      \"sortable\": false,\r\n      \"filterable\": false,\r\n      \"facetable\": false\r\n    }\r\n  ]\r\n}\r\n   \r\n"
+				},
+				"url": {
+					"raw": "https://{{search_service}}.search.windows.net/indexes?api-version=2019-05-06-Preview",
+					"protocol": "https",
+					"host": [
+						"{{search_service}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"indexes"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2019-05-06-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2 - Create DataSource",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "api-key",
+						"value": "{{env_search_api_key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"docs-ds\",\r\n    \"description\": null,\r\n    \"type\": \"azureblob\",\r\n    \"subtype\": null,\r\n    \"credentials\": {\r\n      \"connectionString\": \"{{env_storage_connection_string}}\"\r\n    },\r\n    \"container\": {\r\n       \t\"name\" : \"{{env_storage_container}}\"\r\n    },\r\n    \"dataChangeDetectionPolicy\": null,\r\n    \"dataDeletionDetectionPolicy\": null\r\n}"
+				},
+				"url": {
+					"raw": "https://{{search_service}}.search.windows.net/datasources?api-version=2019-05-06-Preview",
+					"protocol": "https",
+					"host": [
+						"{{search_service}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"datasources"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2019-05-06-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3 - Create Skillset",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"type": "text",
+						"value": "application/json"
+					},
+					{
+						"key": "api-key",
+						"value": "{{env_search_api_key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"doc-enrich\",\r\n    \"description\": null,\r\n    \"skills\": [\r\n    \t{\r\n        \"@odata.type\": \"#Microsoft.Skills.Vision.OcrSkill\",\r\n        \"context\": \"/document/normalized_images/*\",\r\n        \"defaultLanguageCode\": \"en\",\r\n        \"detectOrientation\": true,\r\n        \"inputs\": [\r\n          {\r\n            \"name\": \"image\",\r\n            \"source\": \"/document/normalized_images/*\"\r\n          }\r\n        ],\r\n        \"outputs\": [\r\n          {\r\n            \"name\": \"text\"\r\n          }\r\n        ]\r\n    },\r\n    {\r\n      \"@odata.type\": \"#Microsoft.Skills.Text.MergeSkill\",\r\n      \"description\": \"Create merged_text, which includes all the textual representation of each image inserted at the right location in the content field.\",\r\n      \"context\": \"/document\",\r\n      \"insertPreTag\": \" \",\r\n      \"insertPostTag\": \" \",\r\n      \"inputs\": [\r\n        {\r\n          \"name\":\"text\", \r\n          \"source\": \"/document/content\"\r\n        },\r\n        {\r\n          \"name\": \"itemsToInsert\", \r\n          \"source\": \"/document/normalized_images/*/text\"\r\n        },\r\n        {\r\n          \"name\":\"offsets\", \r\n          \"source\": \"/document/normalized_images/*/contentOffset\" \r\n        }\r\n      ],\r\n      \"outputs\": [\r\n        {\r\n          \"name\": \"mergedText\", \r\n          \"targetName\" : \"merged_text\"\r\n        }\r\n      ]\r\n    },\r\n        {\r\n            \"@odata.type\": \"#Microsoft.Skills.Text.SplitSkill\",\r\n            \"name\": \"SplitSkill#1\",\r\n            \"description\": null,\r\n            \"context\": \"/document\",\r\n            \"defaultLanguageCode\": \"en\",\r\n            \"textSplitMode\": \"pages\",\r\n            \"maximumPageLength\": 5000,\r\n            \"inputs\": [\r\n                {\r\n                    \"name\": \"text\",\r\n                    \"source\": \"/document/merged_text\"\r\n                }\r\n            ],\r\n            \"outputs\": [\r\n                {\r\n                    \"name\": \"textItems\",\r\n                    \"targetName\": \"pages\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"@odata.type\": \"#Microsoft.Skills.Text.EntityRecognitionSkill\",\r\n            \"name\": \"EntityRecognition#2\",\r\n            \"description\": null,\r\n            \"context\": \"/document\",\r\n            \"categories\": [\r\n                \"Person\",\r\n                \"Location\",\r\n                \"Organization\"\r\n            ],\r\n            \"defaultLanguageCode\": \"en\",\r\n            \"minimumPrecision\": 0.5,\r\n            \"includeTypelessEntities\": null,\r\n            \"inputs\": [\r\n                {\r\n                    \"name\": \"text\",\r\n                    \"source\": \"/document/merged_text\"\r\n                }\r\n            ],\r\n            \"outputs\": [\r\n                {\r\n                    \"name\": \"persons\",\r\n                    \"targetName\": \"people\"\r\n                },\r\n                {\r\n                    \"name\": \"locations\",\r\n                    \"targetName\": \"locations\"\r\n                },\r\n                {\r\n                    \"name\": \"organizations\",\r\n                    \"targetName\": \"organizations\"\r\n                },\r\n                {\r\n                    \"name\": \"namedEntities\",\r\n                    \"targetName\": \"entities\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"@odata.type\": \"#Microsoft.Skills.Text.KeyPhraseExtractionSkill\",\r\n            \"name\": \"KeyPhrases#3\",\r\n            \"description\": null,\r\n            \"context\": \"/document/pages/*\",\r\n            \"defaultLanguageCode\": \"en\",\r\n            \"maxKeyPhraseCount\": null,\r\n            \"inputs\": [\r\n                {\r\n                    \"name\": \"text\",\r\n                    \"source\": \"/document/pages/*\"\r\n                }\r\n            ],\r\n            \"outputs\": [\r\n                {\r\n                    \"name\": \"keyPhrases\",\r\n                    \"targetName\": \"keyPhrases\"\r\n                }\r\n            ]\r\n        },\r\n        {\r\n            \"@odata.type\": \"#Microsoft.Skills.Util.ShaperSkill\",\r\n            \"name\": \"Shaper#4-Case For Table Projections\",\r\n            \"description\": null,\r\n            \"context\": \"/document\",\r\n            \"inputs\": [\r\n                {\r\n                    \"name\": \"Name\",\r\n                    \"source\": \"/document/metadata_storage_name\"\r\n                }, {\r\n                    \"name\": \"Transcript\",\r\n                    \"source\": \"/document/merged_text\"\r\n                } , {\r\n                    \"name\": \"DocumentID\", \r\n                    \"source\": \"/document/id\"\r\n                }\r\n          \r\n            ],\r\n            \"outputs\": [\r\n                {\r\n                    \"name\": \"output\",\r\n                    \"targetName\": \"Doc\"\r\n                }\r\n            ]\r\n        }\r\n       \r\n    ],\r\n    \"cognitiveServices\": {\r\n        \"@odata.type\": \"#Microsoft.Azure.Search.CognitiveServicesByKey\",\r\n        \"description\": \"mbdmis-cognitive-services\",\r\n      \"key\": \"{{cog_services_key}}\"\r\n    },\r\n    \"knowledgeStore\": {\r\n        \"storageConnectionString\":\"{{env_storage_connection_string}}\",\r\n        \"projections\": [\r\n            {\r\n                \"tables\": [\r\n                   \r\n                    {\r\n                        \"tableName\": \"Documents\",\r\n                         \"generatedKeyName\": \"DocClassID\",\r\n                        \"source\": \"/document/Doc\"\r\n                    }\r\n                ],\r\n                \"objects\": []\r\n            }\r\n            \r\n            \r\n        ]\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://{{search_service}}.search.windows.net/skillsets?api-version=2019-05-06-Preview",
+					"protocol": "https",
+					"host": [
+						"{{search_service}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"skillsets"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2019-05-06-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4 - Create Indexer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					},
+					{
+						"key": "api-key",
+						"value": "{{env_search_api_key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"document-enrich\",\r\n    \"description\": null,\r\n    \"dataSourceName\" : \"{{index_name}}-datasource\",\r\n    \"skillsetName\": \"doc-enrich\",\r\n     \"schedule\": {\"interval\" : \"PT30M\"},\r\n\r\n    \"targetIndexName\" : \"{{index_name}}\",\r\n    \"disabled\": null,\r\n  \r\n  \r\n    \"parameters\": {\r\n        \"batchSize\": 1,\r\n  \t\"maxFailedItems\":-1,\r\n  \t\"maxFailedItemsPerBatch\":-1,\r\n  \t\"configuration\": \r\n\t{\r\n    \t\"dataToExtract\": \"contentAndMetadata\",\r\n    \t\"imageAction\": \"generateNormalizedImages\"\r\n\t}\r\n    },\r\n    \"fieldMappings\": [ {\r\n          \"sourceFieldName\" : \"metadata_storage_path\",\r\n          \"targetFieldName\" : \"id\",\r\n          \"mappingFunction\" : { \"name\" : \"base64Encode\" }\r\n        },\r\n        \r\n        {\r\n        \t\"sourceFieldName\": \"metadata_storage_path\",\r\n        \t\"targetFieldName\": \"metadata_storage_path\"\r\n        },\r\n        {\r\n        \t\"sourceFieldName\": \"metadata_storage_name\",\r\n        \t\"targetFieldName\": \"metadata_storage_name\"\r\n        }],\r\n    \"outputFieldMappings\": [\r\n        \r\n  \t\t{\r\n          \"sourceFieldName\" : \"/document/organizations\", \r\n          \"targetFieldName\" : \"organizations\"\r\n        },\r\n  \t\t{\r\n          \"sourceFieldName\" : \"/document/persons\", \r\n          \"targetFieldName\" : \"persons\"\r\n        },\r\n  \t\t{\r\n          \"sourceFieldName\" : \"/document/locations\", \r\n          \"targetFieldName\" : \"locations\"\r\n        },\r\n        {\r\n          \"sourceFieldName\" : \"/document/pages/*/keyPhrases/*\", \r\n          \"targetFieldName\" : \"keyPhrases\"\r\n        }\r\n    ]\r\n}"
+				},
+				"url": {
+					"raw": "https://{{search_service}}.search.windows.net/indexers?api-version=2019-05-06-Preview",
+					"protocol": "https",
+					"host": [
+						"{{search_service}}",
+						"search",
+						"windows",
+						"net"
+					],
+					"path": [
+						"indexers"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2019-05-06-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5 - Run Indexer",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "api-key",
+						"value": "{{env_search_api_key}}"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "https://{{search_service}}.windows.net/indexers/{{index_name}}/run?api-version=2019-05-06-Preview",
+					"protocol": "https",
+					"host": [
+						"{{search_service}}",
+						"windows",
+						"net"
+					],
+					"path": [
+						"indexers",
+						"{{index_name}}",
+						"run"
+					],
+					"query": [
+						{
+							"key": "api-version",
+							"value": "2019-05-06-Preview"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
