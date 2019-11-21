@@ -428,7 +428,7 @@
     function callPV(id) {
         $.ajax({
             type: "POST",
-            url: "/Home/PartialView",
+            url: "/Home/AnnotationView",
             data: { id: id },
             success: function (data) {
                 var annID = data.annotation.annotationID;
