@@ -1,7 +1,7 @@
 # Search Index Creation
 This folder contains a Postman collection and environment that can be used to create a search index programmatically.  Using Postman allows you to parameterize the API calls, edit the API calls to customize your pipeline, and to easily share & preserve your changes.  
 
-This collection is pre-configured to take advantage of a majority of the out of the box Cognitive Search functionality.
+This collection is pre-configured to take advantage of a majority of the out of the box Cognitive Search functionality and project enriched data in Knowledge Store as tables.
 
 We recommend using this collection to create an initial index and then iterating by editing the postman collection and adding custom skills as needed. This collection assumes that Azure Blob storage is the primary data source. Please see this [documentation](https://docs.microsoft.com/en-us/rest/api/searchservice/create-data-source) to understand the necessary changes if you wish to use a different data source.
 
@@ -13,7 +13,7 @@ We recommend using this collection to create an initial index and then iterating
 
 ## Setup Instructions
 1. **Install Postman** - navigate to https://www.getpostman.com/apps to download and install postman for your operating system if you haven't already.
-2. **Import Files** - import *Cognitive Search Pipeline APIs.postman_collection.json* and *Cognitive Search Pipeline Environment.postman_environment.json* using the Postman UI. 
+2. **Import Files** - import *Saving Enriched Documents.postman_collection.json* and *Cognitive Search Pipeline Environment.postman_environment.json* using the Postman UI. 
 
     ![import files](../images/postman_import_files.png)
 
@@ -37,7 +37,7 @@ We recommend using this collection to create an initial index and then iterating
     3. Create a skillset
     4. Create indexer
 
-    You can then *check the indexer status* to see if documents are processing or if there are any errors. If the indexer does not start running automatically, you can run the indexer manually.
+  5.Run Indexer  You can then *check the indexer status* to see if documents are processing or if there are any errors. If the indexer does not start running automatically, you can run the indexer manually.
 
 ## Additional Resources
 For more help working with Postman, see the [documentation](https://www.getpostman.com/docs/v6/postman/launching_postman/sending_the_first_request) on the Postman website.
