@@ -28,7 +28,7 @@ For additional training and support, please see:
 ## Getting Started and Process Overview
 Clone/download this repo onto your computer and then walk through each of these folders in order, following the steps outlined in each of the README files.  After completion of all steps, you will have a working end-to-end solution with the following architecture:
 
-![the cognitive indexing pipelines used for processing unstructured data in Azure Search + Knowledge Store](images/KS.jpg)
+![the cognitive indexing pipelines used for processing unstructured data in Azure Search + Knowledge Store](images/KS.png)
 
 
 ### [00 - Resource Deployment](./00%20-%20Resource%20Deployment)
@@ -57,6 +57,7 @@ This folder contains a small data set in a variety of file formats that can be u
 
 ## Special Thanks
 Special thanks Microsoft's Early Access innovation Program (EAiP) and to Derek Legenzoff, Christopher Romero, Lauren Mills, and Chris Lill who wrote a large majority of the original Cognitive Search code.
+
 Special thanks to The University of Alabama's MIS Capstone program and to Sara Hudson, Makayla Dorroh, Caitlin Jones, Anna Tuggle, Shaun Duarte, and Gabby Allen who wrote the Knowledge Store code.
 
 ## License

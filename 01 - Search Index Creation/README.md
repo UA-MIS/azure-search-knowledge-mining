@@ -37,7 +37,7 @@ We recommend using this collection to create an initial index and then iterating
     3. Create a skillset
     4. Create indexer
 
-  5.Run Indexer  You can then *check the indexer status* to see if documents are processing or if there are any errors. If the indexer does not start running automatically, you can run the indexer manually.
+  You can then *check the indexer status* to see if documents are processing or if there are any errors. If the indexer does not start running automatically, you can run the indexer manually.
 
 ## Additional Resources
 For more help working with Postman, see the [documentation](https://www.getpostman.com/docs/v6/postman/launching_postman/sending_the_first_request) on the Postman website.
