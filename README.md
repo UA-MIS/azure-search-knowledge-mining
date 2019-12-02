@@ -2,14 +2,14 @@
 
 # Knowledge Mining Solution Accelerator Guide
 ## About this repository
-Welcome to the Knowledge Mining Solution Accelerator!  This accelerator was built to provide developers with all of the resources needed to quickly build an initial Knowledge Mining prototype with [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro).  Use this accelerator to jump start your development efforts with your own data or as a learning tool to better understand how Cognitive Search can be leveraged for the unique needs of your business.
+Welcome to the Knowledge Mining Solution Accelerator!  This accelerator was built to provide developers with all of the resources needed to quickly build an initial Knowledge Mining prototype with [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) and [Knowledge Store](https://docs.microsoft.com/en-us/azure/search/knowledge-store-concept-intro).  Use this accelerator to jump start your development efforts with your own data or as a learning tool to better understand how Cognitive Search can be combined with Knowledge Store for the unique needs of you're business.
 
-In this repository, we've provided you with all of the artifacts needed to quickly create a Cognitive Search Solution including: templates for deploying the appropriate Azure resources, assets for creating your first search index, templates for custom skills, a basic web app, and PowerBI reports to monitor search solution performance. We've infused best practices throughout the documentation to help further guide you.
+In this repository, we've provided you with all of the artifacts needed to quickly create a Cognitive Search + Knowledge Store Solution including: templates for deploying the appropriate Azure resources, assets for creating your first search index, templates for custom skills, a basic web app, and PowerBI reports to monitor search solution performance. We've infused best practices throughout the documentation to help further guide you.
 
-> Note: Cognitive Search is an AI feature in Azure Search rather than a standalone product. See this [doc](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) for more information on the subject.
+> Note: Cognitive Search is an AI feature in Azure Search rather than a standalone product. See this [doc](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) for more information on the subject. Knowledge Store is a feature of Azure Cognitive Search that persists output from an AI enrichment pipeline for later analysis.
 
 Once finished, you'll have a web app ready to search against your data like in the image below:
-![screenshot](images/ui.PNG)
+![screenshot](images/KnowledgeStoreWebApp.PNG)
 
 ## Prerequisites
 In order to successfully complete your solution, you will need to have access to and or provisioned the following:
@@ -28,7 +28,7 @@ For additional training and support, please see:
 ## Getting Started and Process Overview
 Clone/download this repo onto your computer and then walk through each of these folders in order, following the steps outlined in each of the README files.  After completion of all steps, you will have a working end-to-end solution with the following architecture:
 
-![the cognitive indexing pipelines used for processing unstructured data in Azure Search](images/architecture.jpg)
+![the cognitive indexing pipelines used for processing unstructured data in Azure Search + Knowledge Store](images/KS.png)
 
 
 ### [00 - Resource Deployment](./00%20-%20Resource%20Deployment)
@@ -42,7 +42,7 @@ This folder contains a Postman collection that can be used to create a search in
 We recommend using this collection to create an initial index and then iterrating by editing the postman collection and adding custom skills as needed.
 
 ### [02 - Web UI Template](./02%20-%20Web%20UI%20Template)
-This folder contains a basic Web UI Template, written in .NET Core, which can be configured to query your search index. Simply follow the steps outlined in the [Web UI Template README file](./02%20-%20Web%20UI%20Template/README.md) to integrate your new search index into the web app.
+This folder contains a basic Web UI Template, written in .NET Core, which can be configured to query your search index and interact with Knowledge Store. Simply follow the steps outlined in the [Web UI Template README file](./02%20-%20Web%20UI%20Template/README.md) to integrate your new search index into the web app and use the added Knowledge Store features.
 
 ### [03 - Data Science & Custom Skills](./03%20-%20Data%20Science%20and%20Custom%20Skills)
 This folder contains examples and templates to add your own custom skills to your solution. These custom skills help to align the solution to the needs of your particular use case, but is entirely optional and may be skipped if not needed.
@@ -56,7 +56,9 @@ This folder contains optional pre-built PowerBI reports that can be used to moni
 This folder contains a small data set in a variety of file formats that can be used to build your solution if you do not have another data set available.
 
 ## Special Thanks
-Special thanks Microsoft's Early Access innovation Program (EAiP) and to Derek Legenzoff, Christopher Romero, Lauren Mills, and Chris Lill who wrote a large majority of the code here.
+Special thanks Microsoft's Early Access innovation Program (EAiP) and to Derek Legenzoff, Christopher Romero, Lauren Mills, and Chris Lill who wrote a large majority of the original Cognitive Search code.
+
+Special thanks to The University of Alabama's MIS Capstone program and to Sara Hudson, Makayla Dorroh, Caitlin Jones, Anna Tuggle, Shaun Duarte, and Gabby Allen who wrote the Knowledge Store code.
 
 ## License
 Copyright (c) Microsoft Corporation
