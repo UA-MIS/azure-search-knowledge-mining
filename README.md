@@ -1,7 +1,6 @@
 ![](images/kmheader.png)
 
-# Knowledge Mining Solution Accelerator 
-with Knowledge Store Guide
+# Knowledge Mining Solution Accelerator with Knowledge Store Guide
 ## About this repository
 Welcome to the Knowledge Mining Solution Accelerator with Knowledge Store!  This accelerator was built to provide developers with all of the resources needed to quickly build an initial Knowledge Mining prototype with [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) and [Knowledge Store](https://docs.microsoft.com/en-us/azure/search/knowledge-store-concept-intro).  Use this accelerator to jump start your development efforts with your own data or as a learning tool to better understand how Cognitive Search can be combined with Knowledge Store for the unique needs of you're business.
 
@@ -30,14 +29,23 @@ For additional training and support, please see:
 The following features exist to demonstrate Knowledge Store's capabilities:  
 
  » Highlight Text (Annotate)
- ^p» Classify Text & Entities
+ 
+ » Classify Text & Entities
+ 
  » Classify Document Type
+ 
  » Add Comments to Annotations
+ 
  » Save Annotations to Knowledge Store
+ 
  » Accept & Deny Annotations
+ 
  » Display Previous Text & Entity Annotations
+ 
  » View Details of an Annotation
+ 
  » Add New Text & Entity Classifications
+ 
  » View Deleted Annotations & Comments
 
 
