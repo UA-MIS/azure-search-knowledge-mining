@@ -1,4 +1,6 @@
-﻿
+﻿@* Copyright(c) Microsoft Corporation, Sara Hudson, Makayla Dorroh, Caitlin Jones, Gabby Allen, Anna Tuggle, Shaun Duarte.
+All rights reserved. Licensed under the MIT License *@
+
 @{
     ViewData["Title"] = "AddClass";
 }
@@ -58,17 +60,17 @@
 
         //if null doesnt save to table
         if (text != "") {
-             $.ajax({
-            type: "POST",
-            url: "/Home/SaveDocClass", //name of the backend method
-            data: { text: text },
-            success: function () {
-                location.reload(); //reloads page after button click
-            }
-        });
+            $.ajax({
+                type: "POST",
+                url: "/Home/SaveDocClass", //name of the backend method
+                data: { text: text },
+                success: function () {
+                    location.reload(); //reloads page after button click
+                }
+            });
         } else {
             alert("Please enter some text");
-        }       
+        }
     }
 </script>
 
@@ -78,14 +80,14 @@
 
         //if null doesnt save to table
         if (text != "") {
-             $.ajax({
-            type: "POST",
-            url: "/Home/SaveTextClass", //name of the backend method
-            data: { text: text },
-            success: function () {
-                location.reload(); //reloads page after button click
-            }
-        });
+            $.ajax({
+                type: "POST",
+                url: "/Home/SaveTextClass", //name of the backend method
+                data: { text: text },
+                success: function () {
+                    location.reload(); //reloads page after button click
+                }
+            });
         } else {
             alert("Please enter some text");
         }
@@ -98,14 +100,14 @@
 
         //if null doesnt save to table
         if (text != "") {
-             $.ajax({
-            type: "POST",
-            url: "/Home/SaveEntityClass", //name of the backend method
-            data: { text: text },
-            success: function () {
-                location.reload(); //reloads page after button click
-            }
-        });
+            $.ajax({
+                type: "POST",
+                url: "/Home/SaveEntityClass", //name of the backend method
+                data: { text: text },
+                success: function () {
+                    location.reload(); //reloads page after button click
+                }
+            });
         } else {
             alert("Please enter some text");
         }

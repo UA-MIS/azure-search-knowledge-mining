@@ -1,4 +1,6 @@
-﻿
+﻿<!-- Copyright (c) Microsoft Corporation, Sara Hudson, Makayla Dorroh, Caitlin Jones, Gabby Allen, Anna Tuggle, Shaun Duarte.
+    All rights reserved. Licensed under the MIT License. -->
+
 @{
     ViewData["Title"] = "Soft Delete";
 }
@@ -7,14 +9,12 @@
 <head>
     <script>
         window.onload =
-        function ()
-        {
-            if (!window.location.hash)
-            {
-                window.location = window.location + '#loaded';
-                window.location.reload();
+            function () {
+                if (!window.location.hash) {
+                    window.location = window.location + '#loaded';
+                    window.location.reload();
+                }
             }
-        }
     </script>
 
     <style>
