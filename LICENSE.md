@@ -1,6 +1,6 @@
     MIT License
 
-    Copyright (c) Microsoft Corporation. All rights reserved.
+    Copyright (c) Microsoft Corporation, David Hale, Makayla Dorroh, Sara Hudson, Caitlin Jones, Gabby Allen, Anna Tuggle, Shaun Duarte.       All rights reserved.
 
     Permission is hereby granted, free of charge, to any person obtaining a copy
     of this software and associated documentation files (the "Software"), to deal
