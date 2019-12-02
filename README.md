@@ -29,7 +29,7 @@ For additional training and support, please see:
 The following features exist to demonstrate Knowledge Store's capabilities:  
 
  » Highlight Text (Annotate)
- » Classify Text & Entities
+ \n» Classify Text & Entities
  » Classify Document Type
  » Add Comments to Annotations
  » Save Annotations to Knowledge Store
