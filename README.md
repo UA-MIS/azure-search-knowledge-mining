@@ -1,8 +1,8 @@
 ![](images/kmheader.png)
 
-# Knowledge Mining Solution Accelerator Guide
+# Knowledge Mining Solution Accelerator with Knowledge Store Guide
 ## About this repository
-Welcome to the Knowledge Mining Solution Accelerator!  This accelerator was built to provide developers with all of the resources needed to quickly build an initial Knowledge Mining prototype with [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) and [Knowledge Store](https://docs.microsoft.com/en-us/azure/search/knowledge-store-concept-intro).  Use this accelerator to jump start your development efforts with your own data or as a learning tool to better understand how Cognitive Search can be combined with Knowledge Store for the unique needs of you're business.
+Welcome to the Knowledge Mining Solution Accelerator with Knowledge Store!  This accelerator was built to provide developers with all of the resources needed to quickly build an initial Knowledge Mining prototype with [Azure Cognitive Search](https://docs.microsoft.com/en-us/azure/search/cognitive-search-concept-intro) and [Knowledge Store](https://docs.microsoft.com/en-us/azure/search/knowledge-store-concept-intro).  Use this accelerator to jump start your development efforts with your own data or as a learning tool to better understand how Cognitive Search can be combined with Knowledge Store for the unique needs of you're business.
 
 In this repository, we've provided you with all of the artifacts needed to quickly create a Cognitive Search + Knowledge Store Solution including: templates for deploying the appropriate Azure resources, assets for creating your first search index, templates for custom skills, a basic web app, and PowerBI reports to monitor search solution performance. We've infused best practices throughout the documentation to help further guide you.
 
@@ -24,6 +24,21 @@ The directions provided for this repository assume fundemental working knowledge
 For additional training and support, please see:
  1. [Knowledge Mining Bootcamp](https://github.com/Azure/LearnAI-KnowledgeMiningBootcamp)
  2. [Full Cognitive Search Documentation](https://docs.microsoft.com/en-us/azure/search/cognitive-search-resources-documentation)
+
+## Features
+The following features exist to demonstrate Knowledge Store's capabilities:  
+
+ » Highlight Text (Annotate)
+ » Classify Text & Entities
+ » Classify Document Type
+ » Add Comments to Annotations
+ » Save Annotations to Knowledge Store
+ » Accept & Deny Annotations
+ » Display Previous Text & Entity Annotations
+ » View Details of an Annotation
+ » Add New Text & Entity Classifications
+ » View Deleted Annotations & Comments
+
 
 ## Getting Started and Process Overview
 Clone/download this repo onto your computer and then walk through each of these folders in order, following the steps outlined in each of the README files.  After completion of all steps, you will have a working end-to-end solution with the following architecture:
@@ -61,7 +76,7 @@ Special thanks Microsoft's Early Access innovation Program (EAiP) and to Derek L
 Special thanks to The University of Alabama's MIS Capstone program and to Sara Hudson, Makayla Dorroh, Caitlin Jones, Anna Tuggle, Shaun Duarte, and Gabby Allen who wrote the Knowledge Store code.
 
 ## License
-Copyright (c) Microsoft Corporation
+Copyright (c) Microsoft Corporation, David Hale, Makayla Dorroh, Sara Hudson, Caitlin Jones, Gabby Allen, Anna Tuggle, Shaun Duarte 
 
 All rights reserved.
 
